@@ -1,0 +1,44 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer_main": {
+      "type": "footer",
+      "blocks": {
+        "links_shop": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "links_help": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
+        "newsletter_block": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Stay in the loop",
+            "subheading": "Subscribe for updates, special offers, and more."
+          }
+        }
+      },
+      "block_order": [
+        "links_shop",
+        "links_help",
+        "newsletter_block"
+      ],
+      "settings": {
+        "show_payment_icons": true,
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "footer_main"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "hero_video_banner": {
+      "type": "hero-video-banner",
+      "settings": {}
+    },
+    "editorial_collection_grid": {
+      "type": "editorial-collection-grid",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "featured_product_slider": {
+      "type": "featured-product-slider",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "text_with_image_split": {
+      "type": "text-with-image-split",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero_video_banner",
+    "editorial_collection_grid",
+    "featured_product_slider",
+    "text_with_image_split"
+  ]
+}

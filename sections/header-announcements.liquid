@@ -1,0 +1,271 @@
+{%- if section.blocks.size > 0 -%}
+  {%- assign auto_rotate = section.settings.auto_rotate -%}
+  {%- assign speed = section.settings.auto_rotate_speed | times: 1000 -%}
+
+  <aside
+    class="announcement-bar color-{{ section.settings.color_scheme }}"
+    role="region"
+    aria-label="{{ 'sections.announcement_bar.label' | t }}"
+    data-announcement-bar
+    data-auto-rotate="{{ auto_rotate }}"
+    data-speed="{{ speed }}"
+  >
+    <div class="announcement-bar__inner">
+      <div class="announcement-bar__slider" aria-live="polite">
+        {%- for block in section.blocks -%}
+          <div
+            class="announcement-bar__slide{% if forloop.first %} announcement-bar__slide--active{% endif %}"
+            role="group"
+            aria-roledescription="{{ 'sections.announcement_bar.announcement' | t }}"
+            aria-label="{{ 'sections.announcement_bar.slide_of' | t: current: forloop.index, total: section.blocks.size }}"
+            aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}" class="announcement-bar__link">
+                {{- block.settings.text | escape -}}
+              </a>
+            {%- else -%}
+              <p class="announcement-bar__text">
+                {{- block.settings.text | escape -}}
+              </p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <button
+        class="announcement-bar__close"
+        type="button"
+        aria-label="{{ 'sections.announcement_bar.dismiss' | t }}"
+        data-announcement-close
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    position: relative;
+    border-bottom: 1px solid var(--color-border, currentColor);
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 60px;
+  }
+
+  .announcement-bar[hidden] {
+    max-height: 0;
+    opacity: 0;
+    border-bottom: none;
+    pointer-events: none;
+  }
+
+  .announcement-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 40px;
+    position: relative;
+  }
+
+  .announcement-bar__slider {
+    position: relative;
+    display: grid;
+    grid: [stack] auto / [stack] auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .announcement-bar__slide {
+    grid-area: stack;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  }
+
+  .announcement-bar__slide--active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .announcement-bar__text,
+  .announcement-bar__link {
+    margin: 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: currentColor;
+  }
+
+  .announcement-bar__link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .announcement-bar__link:hover {
+    text-decoration: underline;
+  }
+
+  .announcement-bar__close {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: currentColor;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .announcement-bar__close:hover {
+    opacity: 1;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var bars = document.querySelectorAll('[data-announcement-bar]');
+
+    bars.forEach(function (bar) {
+      var slides = bar.querySelectorAll('.announcement-bar__slide');
+      var closeBtn = bar.querySelector('[data-announcement-close]');
+      var autoRotate = bar.getAttribute('data-auto-rotate') === 'true';
+      var speed = parseInt(bar.getAttribute('data-speed'), 10) || 5000;
+      var current = 0;
+      var timer = null;
+      var paused = false;
+
+      function showSlide(index) {
+        slides.forEach(function (slide, i) {
+          if (i === index) {
+            slide.classList.add('announcement-bar__slide--active');
+            slide.setAttribute('aria-hidden', 'false');
+          } else {
+            slide.classList.remove('announcement-bar__slide--active');
+            slide.setAttribute('aria-hidden', 'true');
+          }
+        });
+        current = index;
+      }
+
+      function nextSlide() {
+        if (slides.length <= 1) return;
+        showSlide((current + 1) % slides.length);
+      }
+
+      function startAutoRotate() {
+        if (!autoRotate || slides.length <= 1) return;
+        stopAutoRotate();
+        timer = setInterval(function () {
+          if (!paused) nextSlide();
+        }, speed);
+      }
+
+      function stopAutoRotate() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      bar.addEventListener('mouseenter', function () {
+        paused = true;
+      });
+
+      bar.addEventListener('mouseleave', function () {
+        paused = false;
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          stopAutoRotate();
+          bar.setAttribute('hidden', '');
+        });
+      }
+
+      startAutoRotate();
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.announcement_bar.name",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "t:settings.auto_rotate_announcements",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "auto_rotate_speed",
+      "label": "t:settings.scroll_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:names.announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:settings.text",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:settings.link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.announcement_bar.name",
+      "blocks": [
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Welcome to our store"
+          }
+        },
+        {
+          "type": "announcement",
+          "settings": {
+            "text": "Free shipping on orders over $50"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

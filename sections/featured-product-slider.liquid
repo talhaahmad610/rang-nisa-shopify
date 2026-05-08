@@ -1,0 +1,455 @@
+{%- liquid
+  assign collection = section.settings.collection
+  assign products_count = section.settings.products_count
+  assign show_vendor = section.settings.show_vendor
+  assign show_quick_add = section.settings.show_quick_add
+-%}
+
+<div
+  class="fps color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="fps__header">
+    <h2 class="fps__heading">{{ section.settings.heading }}</h2>
+    {% if collection != blank %}
+      <a href="{{ collection.url }}" class="fps__view-all">
+        {{ 'actions.view_all' | t }}
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="fps__slider-wrapper">
+    <div class="fps__slider" data-slider>
+      {% if collection != blank %}
+        {% for product in collection.products limit: products_count %}
+          <div class="fps__card">
+            <div class="fps__card-media">
+              {% if product.featured_image != blank %}
+                {{
+                  product.featured_image
+                  | image_url: width: 600, height: 800, crop: 'center'
+                  | image_tag: loading: 'lazy', class: 'fps__card-image'
+                }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'fps__card-placeholder' }}
+              {% endif %}
+
+              {% if show_quick_add %}
+                {% assign first_available_variant = product.variants | where: 'available', true | first %}
+                {% if first_available_variant %}
+                  <button
+                    type="button"
+                    class="fps__quick-add"
+                    data-variant-id="{{ first_available_variant.id }}"
+                    aria-label="{{ 'sections.featured_product_slider.quick_add' | t }} — {{ product.title | escape }}"
+                  >
+                    <span class="fps__quick-add-text" data-add-text>
+                      {{ 'sections.featured_product_slider.quick_add' | t }}
+                    </span>
+                    <span class="fps__quick-add-text fps__quick-add-text--added" data-added-text>
+                      {{ 'sections.featured_product_slider.added' | t }}
+                    </span>
+                  </button>
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="fps__card-info">
+              {% if show_vendor %}
+                <p class="fps__card-vendor">{{ product.vendor }}</p>
+              {% endif %}
+              <a href="{{ product.url }}" class="fps__card-title">
+                {{ product.title }}
+              </a>
+              <div class="fps__card-price">
+                {% if product.compare_at_price > product.price %}
+                  <span class="fps__price fps__price--sale">
+                    {{ product.price | money }}
+                  </span>
+                  <span class="fps__price fps__price--compare">
+                    {{ product.compare_at_price | money }}
+                  </span>
+                {% else %}
+                  <span class="fps__price">
+                    {{ product.price | money }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% for i in (1..products_count) %}
+          <div class="fps__card">
+            <div class="fps__card-media">
+              {{ 'product-1' | placeholder_svg_tag: 'fps__card-placeholder' }}
+            </div>
+            <div class="fps__card-info">
+              {% if show_vendor %}
+                <p class="fps__card-vendor">{{ 'sections.featured_product_slider.heading' | t }}</p>
+              {% endif %}
+              <p class="fps__card-title">{{ 'sections.featured_product_slider.heading' | t }}</p>
+              <div class="fps__card-price">
+                <span class="fps__price">{{ 0 | money }}</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="fps__controls">
+      <button
+        type="button"
+        class="fps__arrow fps__arrow--prev"
+        data-prev
+        aria-label="{{ 'sections.featured_product_slider.previous' | t }}"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1"/>
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="fps__arrow fps__arrow--next"
+        data-next
+        aria-label="{{ 'sections.featured_product_slider.next' | t }}"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .fps {
+    padding: 48px 0;
+  }
+
+  .fps__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 0 16px;
+    margin: 0 auto 24px;
+    border-bottom: 1px solid currentColor;
+    opacity: 0.85;
+    max-width: var(--page-width, 1200px);
+    padding-inline: var(--page-gutter, 20px);
+  }
+
+  .fps__heading {
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0;
+    text-transform: none;
+  }
+
+  .fps__view-all {
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: currentColor;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .fps__view-all:hover {
+    opacity: 1;
+  }
+
+  .fps__slider-wrapper {
+    position: relative;
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding-inline: var(--page-gutter, 20px);
+  }
+
+  .fps__slider {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .fps__slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fps__card {
+    flex: 0 0 calc(50% - 8px);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  @media (min-width: 750px) {
+    .fps__card {
+      flex: 0 0 calc(25% - 12px);
+    }
+  }
+
+  .fps__card-media {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .fps__card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fps__card-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fps__quick-add {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #000);
+    border: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    text-align: center;
+  }
+
+  .fps__quick-add-text--added {
+    display: none;
+  }
+
+  .fps__quick-add.is-added .fps__quick-add-text--added {
+    display: inline;
+  }
+
+  .fps__quick-add.is-added [data-add-text] {
+    display: none;
+  }
+
+  .fps__card-media:hover .fps__quick-add {
+    transform: translateY(0);
+  }
+
+  @media (hover: none) {
+    .fps__quick-add {
+      transform: translateY(0);
+    }
+  }
+
+  .fps__card-info {
+    padding: 12px 0 0;
+  }
+
+  .fps__card-vendor {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin: 0 0 4px;
+  }
+
+  .fps__card-title {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-decoration: none;
+    color: currentColor;
+    margin: 0 0 4px;
+    line-height: 1.4;
+  }
+
+  .fps__card-title:hover {
+    text-decoration: underline;
+  }
+
+  .fps__card-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+  }
+
+  .fps__price--sale {
+    font-weight: 500;
+  }
+
+  .fps__price--compare {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  .fps__controls {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+
+  .fps__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: currentColor;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    padding: 0;
+  }
+
+  .fps__arrow:hover {
+    opacity: 1;
+  }
+
+  .fps__arrow:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var sections = document.querySelectorAll('[data-section-id]');
+
+    sections.forEach(function (section) {
+      if (section.querySelector('[data-slider]') === null) return;
+
+      var slider = section.querySelector('[data-slider]');
+      var prevBtn = section.querySelector('[data-prev]');
+      var nextBtn = section.querySelector('[data-next]');
+
+      if (!slider || !prevBtn || !nextBtn) return;
+
+      function getScrollAmount() {
+        var card = slider.querySelector('.fps__card');
+        if (!card) return 300;
+        var style = window.getComputedStyle(slider);
+        var gap = parseInt(style.columnGap || style.gap, 10) || 16;
+        return card.offsetWidth + gap;
+      }
+
+      function updateButtons() {
+        var maxScroll = slider.scrollWidth - slider.clientWidth;
+        prevBtn.disabled = slider.scrollLeft <= 1;
+        nextBtn.disabled = slider.scrollLeft >= maxScroll - 1;
+      }
+
+      prevBtn.addEventListener('click', function () {
+        slider.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', function () {
+        slider.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+      });
+
+      slider.addEventListener('scroll', updateButtons);
+      updateButtons();
+
+      var quickAddButtons = section.querySelectorAll('.fps__quick-add');
+
+      quickAddButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          var variantId = btn.getAttribute('data-variant-id');
+          if (!variantId) return;
+
+          btn.disabled = true;
+
+          fetch('/cart/add.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: parseInt(variantId, 10), quantity: 1 }),
+          })
+            .then(function (response) {
+              if (!response.ok) throw new Error('Add to cart failed');
+              btn.classList.add('is-added');
+              setTimeout(function () {
+                btn.classList.remove('is-added');
+                btn.disabled = false;
+              }, 1500);
+            })
+            .catch(function () {
+              btn.disabled = false;
+            });
+        });
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.featured_product_slider.name",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Featured products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:settings.collection"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "t:settings.product_count",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:settings.show_vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "t:settings.show_quick_add",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured_product_slider.name"
+    }
+  ]
+}
+{% endschema %}
