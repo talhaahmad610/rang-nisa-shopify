@@ -15,7 +15,7 @@
       "type": "header-announcements",
       "blocks": {
         "announcement_BxgCk9": {
-          "type": "_announcement",
+          "type": "announcement",
           "settings": {
             "text": "Welcome to our store",
             "link": "",

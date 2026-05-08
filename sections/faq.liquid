@@ -1,0 +1,119 @@
+{%- if section.blocks.size > 0 -%}
+<section
+  id="faq-{{ section.id }}"
+  class="faq page-width"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.heading != blank -%}
+    <h2 class="faq__heading">{{ section.settings.heading | escape }}</h2>
+  {%- endif -%}
+
+  <div class="faq__list">
+    {%- for block in section.blocks -%}
+      {%- if block.settings.question != blank -%}
+        <details class="accordion faq__item" {{ block.shopify_attributes }}>
+          <summary class="accordion__summary">
+            <span>{{ block.settings.question | escape }}</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion__body rte">
+            {{ block.settings.answer }}
+          </div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{%- render 'faq-schema', blocks: section.blocks -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .faq {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  .faq__heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .faq__list {
+    border-top: 1px solid var(--color-black);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--color-black);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.faq.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:settings.padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:settings.padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "t:sections.faq.blocks.faq_item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "t:settings.question",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "t:settings.answer",
+          "default": "<p>We accept returns within 30 days of purchase.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.faq.name"
+    }
+  ]
+}
+{% endschema %}

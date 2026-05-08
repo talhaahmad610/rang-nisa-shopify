@@ -19,12 +19,19 @@
     "text_with_image_split": {
       "type": "text-with-image-split",
       "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
     }
   },
   "order": [
     "hero_video_banner",
     "editorial_collection_grid",
     "featured_product_slider",
-    "text_with_image_split"
+    "text_with_image_split",
+    "faq"
   ]
 }

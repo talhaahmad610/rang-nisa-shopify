@@ -1,0 +1,42 @@
+{% doc %}
+  Renders FAQPage JSON-LD structured data from section blocks.
+
+  @param {array} blocks - Section blocks with settings.question (string) and settings.answer (richtext string).
+
+  @example
+  {% render 'faq-schema', blocks: section.blocks %}
+{% enddoc %}
+
+{%- liquid
+  assign faq_count = 0
+  for block in blocks
+    if block.settings.question != blank
+      assign faq_count = faq_count | plus: 1
+    endif
+  endfor
+-%}
+{%- if faq_count > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- assign output_count = 0 -%}
+    {%- for block in blocks -%}
+      {%- if block.settings.question != blank -%}
+        {%- assign output_count = output_count | plus: 1 -%}
+        {%- if output_count > 1 -%},{%- endif -%}
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | truncate: 500 | json }}
+          }
+        }
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}

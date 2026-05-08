@@ -202,6 +202,65 @@
   </div>
 </article>
 
+{%- liquid
+  assign pdp_faq_count = 0
+  if product.description != blank
+    assign pdp_faq_count = pdp_faq_count | plus: 1
+  endif
+  if section.settings.shipping_info != blank
+    assign pdp_faq_count = pdp_faq_count | plus: 1
+  endif
+  if section.settings.returns_info != blank
+    assign pdp_faq_count = pdp_faq_count | plus: 1
+  endif
+-%}
+{%- if pdp_faq_count > 0 -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- assign pdp_output = 0 -%}
+    {%- if product.description != blank -%}
+      {%- assign pdp_output = pdp_output | plus: 1 -%}
+      {
+        "@type": "Question",
+        "name": {{ 'sections.main_product.description' | t | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ product.description | strip_html | truncate: 500 | json }}
+        }
+      }
+    {%- endif -%}
+    {%- if section.settings.shipping_info != blank -%}
+      {%- assign pdp_output = pdp_output | plus: 1 -%}
+      {%- if pdp_output > 1 -%},{%- endif -%}
+      {
+        "@type": "Question",
+        "name": {{ 'sections.main_product.shipping' | t | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ section.settings.shipping_info | strip_html | truncate: 500 | json }}
+        }
+      }
+    {%- endif -%}
+    {%- if section.settings.returns_info != blank -%}
+      {%- assign pdp_output = pdp_output | plus: 1 -%}
+      {%- if pdp_output > 1 -%},{%- endif -%}
+      {
+        "@type": "Question",
+        "name": {{ 'sections.main_product.returns' | t | json }},
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": {{ section.settings.returns_info | strip_html | truncate: 500 | json }}
+        }
+      }
+    {%- endif -%}
+  ]
+}
+</script>
+{%- endif -%}
+
 {%- comment -%} Variant data for JS {%- endcomment -%}
 <script type="application/json" id="product-variants-{{ section.id }}">
   {{ product.variants | json }}

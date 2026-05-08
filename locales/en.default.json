@@ -483,6 +483,17 @@
       "returns": "Returns",
       "shipping_info_label": "Shipping information",
       "returns_info_label": "Returns policy"
+    },
+    "faq": {
+      "name": "FAQ",
+      "heading": "Frequently asked questions",
+      "blocks": {
+        "faq_item": {
+          "name": "FAQ item",
+          "question_default": "What is your return policy?",
+          "answer_default": "We accept returns within 30 days of purchase."
+        }
+      }
     }
   }
 }

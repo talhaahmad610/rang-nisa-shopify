@@ -1,0 +1,26 @@
+# Rang Nisa
+
+> Rang Nisa is a women's fashion brand offering timeless, minimalist clothing crafted with premium fabrics. Our collections blend contemporary design with elegant simplicity for the modern woman.
+
+We offer pret, luxury pret, and curated lifestyle pieces. Every garment is designed with restraint, quality, and refined taste.
+
+## Products
+
+- [All Products](https://rang-nisa.myshopify.com/collections/all) — Full product catalogue
+- [New Arrivals](https://rang-nisa.myshopify.com/collections/new-arrivals) — Latest pieces
+
+## Collections
+
+- [All Collections](https://rang-nisa.myshopify.com/collections) — Browse by collection
+
+## Pages
+
+- [About Us](https://rang-nisa.myshopify.com/pages/about) — Brand story and values
+- [Contact](https://rang-nisa.myshopify.com/pages/contact) — Customer enquiries
+
+## Policies
+
+- [Shipping Policy](https://rang-nisa.myshopify.com/policies/shipping-policy)
+- [Return Policy](https://rang-nisa.myshopify.com/policies/refund-policy)
+- [Privacy Policy](https://rang-nisa.myshopify.com/policies/privacy-policy)
+- [Terms of Service](https://rang-nisa.myshopify.com/policies/terms-of-service)

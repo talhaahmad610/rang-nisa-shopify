@@ -1185,7 +1185,9 @@
     "cs_slider_inner_color": "Slider inner color",
     "text_on_images": "Text on images",
     "x_position": "Horizontal position",
-    "y_position": "Vertical position"
+    "y_position": "Vertical position",
+    "answer": "Answer",
+    "question": "Question"
   },
   "text_defaults": {
     "accordion_heading": "Accordion heading",
@@ -1240,6 +1242,14 @@
     "main_cart": {
       "name": "Cart",
       "show_cart_note": "Show order note"
+    },
+    "faq": {
+      "name": "FAQ",
+      "blocks": {
+        "faq_item": {
+          "name": "FAQ item"
+        }
+      }
     },
     "footer": {
       "name": "Footer",

@@ -43,6 +43,23 @@
 }
 </script>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ request.origin | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ request.origin }}/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
 {%- if request.page_type == 'product' -%}
   <script type="application/ld+json">
   {
@@ -72,6 +89,13 @@
       "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
       "url": {{ current_url | json }}
     }
+    {%- if product.metafields.reviews.rating != blank -%}
+    ,"aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": {{ product.metafields.reviews.rating | json }},
+      "reviewCount": {{ product.metafields.reviews.rating_count | json }}
+    }
+    {%- endif -%}
   }
   </script>
 {%- endif -%}
@@ -105,6 +129,10 @@
     {%- if article.excerpt != blank -%}
     ,"description": {{ article.excerpt | strip_html | truncate: 250 | json }}
     {%- endif -%}
+    ,"speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": ["h1", "h2", ".article__title", ".article__body"]
+    }
   }
   </script>
 {%- endif -%}
