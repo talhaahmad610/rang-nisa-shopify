@@ -1,34 +1,53 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero_video_banner": {
       "type": "hero-video-banner",
       "settings": {
-        "heading": "Eastern soul. Western ease.",
+        "video": "shopify://files/videos/change_the_Rang_Nisa_font_i_se.mp4",
+        "video_url": "",
+        "overlay_opacity": 40,
+        "text_alignment": "left",
         "subheading": "New season arrivals",
+        "heading": "Eastern soul. Western ease.",
+        "description": "",
         "button_label": "Shop new arrivals",
         "button_link": "/collections/new-arrivals",
         "button_style": "primary",
-        "text_alignment": "left",
-        "overlay_opacity": 35,
+        "color_scheme": "",
         "full_height": true
       }
     },
     "featured_product_slider": {
       "type": "featured-product-slider",
-      "blocks": {},
-      "block_order": [],
       "settings": {
-        "heading": "New arrivals"
+        "heading": "New arrivals",
+        "collection": "",
+        "products_count": 8,
+        "show_vendor": true,
+        "show_quick_add": true,
+        "color_scheme": ""
       }
     },
     "text_with_image_split": {
       "type": "text-with-image-split",
       "settings": {
+        "image_position": "right",
         "heading": "Dressing every woman, every story.",
         "description": "<p>Rang Nisa is a curated women's label rooted in the beauty of both worlds — the grace of Eastern craftsmanship and the ease of Western silhouettes. Each piece is chosen to feel intentional, wearable, and quietly confident.</p>",
         "button_label": "Our story",
         "button_link": "/pages/about",
-        "image_position": "right"
+        "color_scheme": "",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "faq": {
@@ -79,7 +98,9 @@
       ],
       "settings": {
         "heading": "Frequently asked questions",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     }
   },
