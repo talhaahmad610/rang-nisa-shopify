@@ -13,54 +13,6 @@
         "full_height": true
       }
     },
-    "editorial_collection_grid": {
-      "type": "editorial-collection-grid",
-      "blocks": {
-        "eastern_wear": {
-          "type": "collection",
-          "settings": {
-            "label": "Eastern wear"
-          }
-        },
-        "western_wear": {
-          "type": "collection",
-          "settings": {
-            "label": "Western wear"
-          }
-        },
-        "new_arrivals": {
-          "type": "collection",
-          "settings": {
-            "label": "New arrivals"
-          }
-        },
-        "sale": {
-          "type": "collection",
-          "settings": {
-            "label": "Sale"
-          }
-        },
-        "accessories": {
-          "type": "collection",
-          "settings": {
-            "label": "Accessories"
-          }
-        }
-      },
-      "block_order": [
-        "eastern_wear",
-        "western_wear",
-        "new_arrivals",
-        "sale",
-        "accessories"
-      ],
-      "settings": {
-        "heading": "Shop by category",
-        "show_heading": true,
-        "layout": "slider",
-        "color_scheme": "scheme-1"
-      }
-    },
     "featured_product_slider": {
       "type": "featured-product-slider",
       "blocks": {},
@@ -133,7 +85,6 @@
   },
   "order": [
     "hero_video_banner",
-    "editorial_collection_grid",
     "featured_product_slider",
     "text_with_image_split",
     "faq"
