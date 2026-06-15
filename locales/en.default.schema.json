@@ -57,6 +57,7 @@
     "content_layout": "Content layout",
     "content_width": "Content width only applies when the section width is set to full width.",
     "copyright": "Copyright",
+    "wordmark": "Wordmark",
     "customer_account": "Customer account",
     "describe_the_video_for": "Describe the video for customers using screen readers. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#video-block)",
     "edit_empty_state_collection_in_theme_settings": "Edit empty state collection in [theme settings](/editor?context=theme&category=search)",
@@ -70,6 +71,7 @@
     "fonts": "Fonts",
     "grid": "Grid",
     "grid_layout": "Grid layout",
+    "slider": "Slider",
     "heading": "Heading",
     "heading_size": "Heading size",
     "utilities": "Utilities",
@@ -79,6 +81,7 @@
     "images": "Images",
     "input": "Input",
     "inverse_logo_info": "Used when transparent header background is set to Inverse",
+    "logo_text_info": "Shown when no logo image is uploaded. Defaults to store name.",
     "layout": "Layout",
     "link": "Link",
     "link_padding": "Link padding",
@@ -548,6 +551,8 @@
     "gluten_free": "Gluten free",
     "gradient": "Gradient",
     "grid": "Grid",
+    "grid_layout": "Grid",
+    "slider": "Slider",
     "h1": "Heading 1",
     "h2": "Heading 2",
     "h3": "Heading 3",
@@ -954,6 +959,8 @@
     "links": "Links",
     "logo": "Logo",
     "logo_font": "Logo font",
+    "logo_text": "Logo text",
+    "logo_font_size": "Logo font size",
     "loop": "Loop",
     "make_details_sticky_desktop": "Sticky on desktop",
     "make_section_full_width": "Make section full width",
@@ -1259,7 +1266,8 @@
     },
     "editorial_collection_grid": {
       "name": "Editorial collection grid",
-      "show_heading": "Show heading"
+      "show_heading": "Show heading",
+      "layout": "Display layout"
     },
     "header": {
       "name": "Header",

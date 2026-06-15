@@ -55,14 +55,20 @@
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: settings.logo_height,
-      alt_text_fallback: alt_text_fallback,
-      text_fallback: shop.name,
-      style: logo_style
-    %}
+    {% if settings.logo != blank %}
+      {% render 'image',
+        image: settings.logo,
+        class: 'header-logo__image',
+        height: settings.logo_height,
+        alt_text_fallback: alt_text_fallback,
+        text_fallback: shop.name,
+        style: logo_style
+      %}
+    {% else %}
+      <span class="header-logo__wordmark" aria-label="{{ alt_text_fallback }}">
+        {{- settings.logo_text | default: shop.name -}}
+      </span>
+    {% endif %}
   </span>
 
   {% if use_inverse_logo %}
@@ -70,14 +76,20 @@
       class="header-logo__image-container header-logo__image-container--inverse"
       data-testid="header-logo-inverse"
     >
-      {% render 'image',
-        image: inverse_logo,
-        class: 'header-logo__image',
-        height: settings.logo_height,
-        alt_text_fallback: alt_text_fallback,
-        text_fallback: shop.name,
-        style: inverse_logo_style
-      %}
+      {% if inverse_logo != blank %}
+        {% render 'image',
+          image: inverse_logo,
+          class: 'header-logo__image',
+          height: settings.logo_height,
+          alt_text_fallback: alt_text_fallback,
+          text_fallback: shop.name,
+          style: inverse_logo_style
+        %}
+      {% else %}
+        <span class="header-logo__wordmark header-logo__wordmark--inverse" aria-label="{{ alt_text_fallback }}">
+          {{- settings.logo_text | default: shop.name -}}
+        </span>
+      {% endif %}
     </span>
   {% endif %}
 </a>
@@ -137,6 +149,19 @@
 
   .header-logo__image-container--inverse {
     display: var(--header-logo-inverse-display, none);
+  }
+
+  .header-logo__wordmark {
+    display: block;
+    font-family: var(--logo-font--family, var(--font-heading--family));
+    font-style: var(--logo-font--style, normal);
+    font-weight: var(--logo-font--weight, 400);
+    font-size: var(--logo-font--size, 1.375rem);
+    letter-spacing: 0.05em;
+    color: var(--color-foreground);
+    white-space: nowrap;
+    text-decoration: none;
+    line-height: 1;
   }
 {% endstylesheet %}
 

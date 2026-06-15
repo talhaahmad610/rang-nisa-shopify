@@ -42,6 +42,9 @@
     assign accent_font_italic_face_id = '[accent_font_italic_family]-[accent_font_italic_weight]-[accent_font_italic_style]|' | replace: '[accent_font_italic_family]', accent_font_italic.family | replace: '[accent_font_italic_weight]', accent_font_italic.weight | replace: '[accent_font_italic_style]', accent_font_italic.style
     assign accent_font_bold_italic_face_id = '[accent_font_bold_italic_family]-[accent_font_bold_italic_weight]-[accent_font_bold_italic_style]|' | replace: '[accent_font_bold_italic_family]', accent_font_bold_italic.family | replace: '[accent_font_bold_italic_weight]', accent_font_bold_italic.weight | replace: '[accent_font_bold_italic_style]', accent_font_bold_italic.style
 
+    assign logo_font = settings.logo_font
+    assign logo_font_face_id = '[logo_font_family]-[logo_font_weight]-[logo_font_style]|' | replace: '[logo_font_family]', logo_font.family | replace: '[logo_font_weight]', logo_font.weight | replace: '[logo_font_style]', logo_font.style
+
     unless rendered_fonts contains primary_font_face_id
       echo primary_font | font_face: font_display: 'swap'
       assign rendered_fonts = rendered_fonts | append: primary_font_face_id
@@ -121,6 +124,11 @@
       echo accent_font_bold_italic | font_face: font_display: 'swap'
       assign rendered_fonts = rendered_fonts | append: accent_font_bold_italic_face_id
     endunless
+
+    unless rendered_fonts contains logo_font_face_id
+      echo logo_font | font_face: font_display: 'swap'
+      assign rendered_fonts = rendered_fonts | append: logo_font_face_id
+    endunless
   %}
 
   :root {
@@ -167,6 +175,10 @@
     --font-accent--family: {{ settings.type_accent_font.family }}, {{ settings.type_accent_font.fallback_families }};
     --font-accent--style: {{ settings.type_accent_font.style }};
     --font-accent--weight: {{ settings.type_accent_font.weight }};
+    --logo-font--family: {{ settings.logo_font.family }}, {{ settings.logo_font.fallback_families }};
+    --logo-font--style: {{ settings.logo_font.style }};
+    --logo-font--weight: {{ settings.logo_font.weight }};
+    --logo-font--size: {{ settings.logo_font_size }}px;
 
     /* Margin sizes */
     --font-heading--spacing: 0.25em;

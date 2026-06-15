@@ -396,7 +396,9 @@
       "products_count": {
         "one": "{{ count }} product",
         "other": "{{ count }} products"
-      }
+      },
+      "previous": "Previous category",
+      "next": "Next category"
     },
     "header": {
       "name": "Header",

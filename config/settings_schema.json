@@ -53,6 +53,36 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "t:settings.favicon"
+      },
+      {
+        "type": "header",
+        "content": "t:content.wordmark"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:info.logo_text_info"
+      },
+      {
+        "type": "text",
+        "id": "logo_text",
+        "label": "t:settings.logo_text"
+      },
+      {
+        "type": "font_picker",
+        "id": "logo_font",
+        "label": "t:settings.logo_font",
+        "default": "cormorant_garamond_n4"
+      },
+      {
+        "type": "range",
+        "id": "logo_font_size",
+        "label": "t:settings.logo_font_size",
+        "min": 14,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "default": 22,
+        "visible_if": "{{ settings.logo == blank }}"
       }
     ]
   },
