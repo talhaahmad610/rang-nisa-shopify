@@ -1,0 +1,183 @@
+<section
+  class="about-values color-{{ section.settings.color_scheme }}"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px; --columns: {{ section.settings.columns }};"
+>
+  <div class="about-values__inner page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="about-values__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="about-values__grid">
+        {%- for block in section.blocks -%}
+          <div class="about-values__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.number != blank -%}
+              <span class="about-values__number">{{ block.settings.number | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.heading != blank -%}
+              <h3 class="about-values__item-heading">{{ block.settings.heading | escape }}</h3>
+            {%- endif -%}
+            {%- if block.settings.description != blank -%}
+              <div class="about-values__item-text rte">{{ block.settings.description }}</div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .about-values {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  .about-values__heading {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 var(--space-7);
+    color: var(--color-black);
+  }
+
+  .about-values__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .about-values__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-black);
+  }
+
+  .about-values__number {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    color: var(--color-gray-500);
+  }
+
+  .about-values__item-heading {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--color-black);
+  }
+
+  .about-values__item-text {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  .about-values__item-text p {
+    margin: 0;
+  }
+
+  @media (min-width: 750px) {
+    .about-values__grid {
+      grid-template-columns: repeat(var(--columns), 1fr);
+      gap: var(--space-8);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.about_values.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "What we stand for"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "t:settings.columns",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:settings.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:settings.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value_item",
+      "name": "t:sections.about_values.blocks.value_item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "t:settings.eyebrow"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:settings.heading",
+          "default": "Our promise"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:settings.description",
+          "default": "<p>Describe a value, principle, or promise that defines your brand.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.about_values.name",
+      "blocks": [
+        { "type": "value_item" },
+        { "type": "value_item" },
+        { "type": "value_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

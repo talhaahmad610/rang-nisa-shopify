@@ -1,1 +1,7 @@
 extends: theme-check:recommended
+
+# This store ships English-only. Horizon includes 50+ locale files we do not
+# maintain, so custom English keys would otherwise flag MatchingTranslations
+# for every other language. Disable that one rule; all other checks stay on.
+MatchingTranslations:
+  enabled: false

@@ -8,6 +8,14 @@
  * ------------------------------------------------------------
  */
 {
+  "options": {
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "social_twitter": "X (Twitter)",
+    "social_tiktok": "TikTok",
+    "pinterest": "Pinterest",
+    "youtube": "YouTube"
+  },
   "accessibility": {
     "account": "Account",
     "active_filters": "Active filters:",
@@ -494,6 +502,23 @@
           "answer_default": "We accept returns within 30 days of purchase."
         }
       }
+    },
+    "page_header": {
+      "name": "Page header",
+      "heading": "Made with intention",
+      "subheading": "A short, evocative introduction to this page."
+    },
+    "about_values": {
+      "name": "About values",
+      "heading": "What we stand for",
+      "blocks": {
+        "value_item": {
+          "name": "Value"
+        }
+      }
+    },
+    "main_policy": {
+      "name": "Policy page"
     }
   }
 }

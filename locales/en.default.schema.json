@@ -1187,7 +1187,10 @@
     "x_position": "Horizontal position",
     "y_position": "Vertical position",
     "answer": "Answer",
-    "question": "Question"
+    "question": "Question",
+    "eyebrow": "Eyebrow",
+    "copyright": "Copyright",
+    "quantity": "Quantity"
   },
   "text_defaults": {
     "accordion_heading": "Accordion heading",
@@ -1250,6 +1253,47 @@
           "name": "FAQ item"
         }
       }
+    },
+    "announcement_bar": {
+      "name": "Announcement bar"
+    },
+    "editorial_collection_grid": {
+      "name": "Editorial collection grid",
+      "show_heading": "Show heading"
+    },
+    "header": {
+      "name": "Header",
+      "settings": {
+        "header_layout": "Header layout",
+        "color_scheme": "Color scheme",
+        "logo_position": "Logo position",
+        "logo_position_options": {
+          "left": "Left",
+          "center": "Center"
+        },
+        "menu": "Menu",
+        "header_behavior": "Header behavior",
+        "show_separator": "Show separator",
+        "transparent_header": "Transparent header",
+        "sticky_header": "Sticky header"
+      }
+    },
+    "text_with_image_split": {
+      "name": "Text with image"
+    },
+    "page_header": {
+      "name": "Page header"
+    },
+    "about_values": {
+      "name": "About values",
+      "blocks": {
+        "value_item": {
+          "name": "Value"
+        }
+      }
+    },
+    "main_policy": {
+      "name": "Policy page"
     },
     "footer": {
       "name": "Footer",

@@ -633,7 +633,7 @@
         if (!priceEl || !variant) return;
         const currency = window.Shopify && Shopify.currency ? Shopify.currency.active : '';
         const sym = window.Shopify && Shopify.money_format
-          ? Shopify.money_format.replace('{{amount}}', '').replace('{{amount_no_decimals}}', '').trim()
+          ? Shopify.money_format.replace('{' + '{amount}}', '').replace('{' + '{amount_no_decimals}}', '').trim()
           : '$';
 
         if (variant.compare_at_price && variant.compare_at_price > variant.price) {

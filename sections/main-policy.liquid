@@ -1,0 +1,136 @@
+<section
+  class="policy color-{{ section.settings.color_scheme }}"
+  style="--padding-top: {{ section.settings.padding_top }}px; --padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="policy__inner page-width">
+    <nav class="policy__breadcrumbs" aria-label="{{ 'general.breadcrumbs.home' | t }}">
+      <a href="{{ routes.root_url }}" class="policy__crumb">{{ 'general.breadcrumbs.home' | t }}</a>
+      <span class="policy__crumb-sep" aria-hidden="true">/</span>
+      <span class="policy__crumb policy__crumb--current">{{ page_title | default: policy.title }}</span>
+    </nav>
+
+    <h1 class="policy__title">{{ policy.title | default: page_title }}</h1>
+
+    <div class="policy__body rte">
+      {{ policy.body }}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .policy {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  .policy__inner {
+    max-width: 760px;
+  }
+
+  .policy__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gray-500);
+    margin-bottom: var(--space-6);
+  }
+
+  .policy__crumb {
+    color: var(--color-gray-500);
+    text-decoration: none;
+  }
+
+  .policy__crumb:hover {
+    color: var(--color-black);
+  }
+
+  .policy__crumb--current {
+    color: var(--color-black);
+  }
+
+  .policy__title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.875rem, 6vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 var(--space-7);
+    color: var(--color-black);
+  }
+
+  .policy__body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-gray-700);
+  }
+
+  .policy__body h2,
+  .policy__body h3 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--color-black);
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-3);
+  }
+
+  .policy__body h2 {
+    font-size: 1.375rem;
+  }
+
+  .policy__body h3 {
+    font-size: 1.125rem;
+  }
+
+  .policy__body p,
+  .policy__body ul,
+  .policy__body ol {
+    margin-bottom: var(--space-4);
+  }
+
+  .policy__body a {
+    color: var(--color-black);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main_policy.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:settings.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:settings.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ]
+}
+{% endschema %}
