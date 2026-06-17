@@ -30,8 +30,8 @@
       "type": "featured-product-slider",
       "settings": {
         "heading": "New arrivals",
-        "collection": "",
-        "products_count": 8,
+        "collection": "new-arrivals",
+        "products_count": 12,
         "show_vendor": true,
         "show_quick_add": true,
         "color_scheme": ""
