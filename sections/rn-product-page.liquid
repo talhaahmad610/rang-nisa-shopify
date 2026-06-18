@@ -548,3 +548,349 @@
   color: #888;
 }
 {% endstylesheet %}
+
+<div class="rn-product">
+
+  <!-- Breadcrumb -->
+  <nav class="rn-product__breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a>
+    {%- if collection -%}
+      <span>/</span>
+      <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+    {%- endif -%}
+    <span>/</span>
+    {{ product.title | escape }}
+  </nav>
+
+  <!-- Body: Gallery + Details -->
+  <div class="rn-product__body">
+
+    <!-- GALLERY -->
+    <div class="rn-product__gallery">
+      <div class="rn-gallery__main">
+
+        <!-- Thumbnails -->
+        <div class="rn-gallery__thumbs" id="rn-thumbs-{{ section.id }}">
+          {%- for media in product.media -%}
+            <div
+              class="rn-gallery__thumb{% if forloop.first %} active{% endif %}"
+              data-index="{{ forloop.index0 }}"
+              onclick="rnSwitchImage({{ forloop.index0 }}, '{{ section.id }}')"
+            >
+              <img
+                src="{{ media | image_url: width: 120 }}"
+                alt="{{ media.alt | escape }}"
+                loading="lazy"
+              >
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <!-- Featured Image -->
+        <div class="rn-gallery__featured" id="rn-featured-{{ section.id }}">
+          {%- if product.featured_image -%}
+            <img
+              class="rn-gallery__featured-img"
+              id="rn-featured-img-{{ section.id }}"
+              src="{{ product.featured_image | image_url: width: 900 }}"
+              srcset="{{ product.featured_image | image_url: width: 600 }} 600w,
+                      {{ product.featured_image | image_url: width: 900 }} 900w,
+                      {{ product.featured_image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 768px) 100vw, 55vw"
+              alt="{{ product.featured_image.alt | escape | default: product.title }}"
+              loading="eager"
+            >
+          {%- else -%}
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ccc;font-size:0.85rem;">No image available</div>
+          {%- endif -%}
+          <div class="rn-gallery__zoom-hint">Hover to zoom</div>
+        </div>
+      </div>
+
+      <!-- Mobile swipe images -->
+      <div class="rn-gallery__mobile-imgs">
+        {%- for media in product.media -%}
+          <img
+            src="{{ media | image_url: width: 800 }}"
+            alt="{{ media.alt | escape }}"
+            loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+          >
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- DETAILS PANEL -->
+    <div class="rn-product__details">
+
+      <!-- Vendor -->
+      {%- if product.vendor -%}
+        <p class="rn-product__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+
+      <!-- Title -->
+      <h1 class="rn-product__title">{{ product.title }}</h1>
+
+      <!-- Price -->
+      <div class="rn-product__price-row" id="rn-price-{{ section.id }}">
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="rn-product__price rn-product__price--sale">{{ current_variant.price | money }}</span>
+          <span class="rn-product__price--compare">{{ current_variant.compare_at_price | money }}</span>
+          <span class="rn-product__badge">Sale</span>
+        {%- else -%}
+          <span class="rn-product__price">{{ current_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+
+      <hr class="rn-product__divider">
+
+      <!-- Product Form -->
+      {%- form 'product', product, id: product_form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" id="rn-variant-id-{{ section.id }}">
+
+        <!-- Variant Options -->
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            <div class="rn-product__option-group">
+              <div class="rn-product__option-label">
+                {{ option.name | escape }}
+                <span id="rn-selected-{{ section.id }}-{{ forloop.index0 }}">{{ option.selected_value }}</span>
+              </div>
+
+              {%- assign opt_name_lower = option.name | downcase -%}
+              {%- if opt_name_lower == 'size' -%}
+                <!-- Size buttons -->
+                <div class="rn-product__size-buttons" data-option-index="{{ forloop.index0 }}">
+                  {%- for value in option.values -%}
+                    {%- assign variant_available = false -%}
+                    {%- for variant in product.variants -%}
+                      {%- if variant.option1 == value or variant.option2 == value or variant.option3 == value -%}
+                        {%- if variant.available -%}{%- assign variant_available = true -%}{%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    <button
+                      type="button"
+                      class="rn-product__size-btn{% if option.selected_value == value %} selected{% endif %}{% unless variant_available %} unavailable{% endunless %}"
+                      data-value="{{ value | escape }}"
+                      data-option-index="{{ forloop.parentloop.index0 }}"
+                      onclick="rnSelectOption(this, '{{ section.id }}')"
+                    >{{ value }}</button>
+                  {%- endfor -%}
+                </div>
+              {%- elsif opt_name_lower == 'colour' or opt_name_lower == 'color' -%}
+                <!-- Color as text buttons -->
+                <div class="rn-product__color-text" data-option-index="{{ forloop.index0 }}">
+                  {%- for value in option.values -%}
+                    <button
+                      type="button"
+                      class="rn-product__color-text-btn{% if option.selected_value == value %} selected{% endif %}"
+                      data-value="{{ value | escape }}"
+                      data-option-index="{{ forloop.parentloop.index0 }}"
+                      onclick="rnSelectOption(this, '{{ section.id }}')"
+                    >{{ value }}</button>
+                  {%- endfor -%}
+                </div>
+              {%- else -%}
+                <!-- Generic dropdown -->
+                <select
+                  class="rn-product__option-select"
+                  data-option-index="{{ forloop.index0 }}"
+                  onchange="rnSelectOptionFromSelect(this, '{{ section.id }}')"
+                >
+                  {%- for value in option.values -%}
+                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
+                  {%- endfor -%}
+                </select>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <!-- Quantity -->
+        <div class="rn-product__qty-row">
+          <div class="rn-product__qty-label">Qty</div>
+          <div class="rn-product__qty-ctrl">
+            <button type="button" class="rn-product__qty-btn" onclick="rnQty(-1,'{{ section.id }}')">−</button>
+            <input class="rn-product__qty-input" type="number" name="quantity" id="rn-qty-{{ section.id }}" value="1" min="1">
+            <button type="button" class="rn-product__qty-btn" onclick="rnQty(1,'{{ section.id }}')">+</button>
+          </div>
+        </div>
+
+        <!-- Add to Cart -->
+        <button
+          type="submit"
+          name="add"
+          class="rn-product__atc-btn"
+          id="rn-atc-{{ section.id }}"
+          {%- unless current_variant.available -%}disabled{%- endunless -%}
+        >
+          {%- if current_variant.available -%}
+            Add to Cart
+          {%- else -%}
+            Sold Out
+          {%- endif -%}
+        </button>
+
+      {%- endform -%}
+
+      <!-- Secondary Actions -->
+      <div class="rn-product__secondary-actions">
+        <button type="button" class="rn-product__action-btn" onclick="rnWishlist(this)">
+          <span>♡</span> Wishlist
+        </button>
+        <button type="button" class="rn-product__action-btn" onclick="rnShare()">
+          <span>⬡</span> Share
+        </button>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="rn-product__trust">
+        <div class="rn-product__trust-item">
+          <span class="rn-product__trust-icon">🚚</span>
+          <div class="rn-product__trust-text">
+            <strong>Free Delivery</strong>
+            Orders above Rs. 3,000
+          </div>
+        </div>
+        <div class="rn-product__trust-item">
+          <span class="rn-product__trust-icon">↩</span>
+          <div class="rn-product__trust-text">
+            <strong>Easy Returns</strong>
+            Within 7 days
+          </div>
+        </div>
+        <div class="rn-product__trust-item">
+          <span class="rn-product__trust-icon">✓</span>
+          <div class="rn-product__trust-text">
+            <strong>Genuine Product</strong>
+            100% Authentic
+          </div>
+        </div>
+        <div class="rn-product__trust-item">
+          <span class="rn-product__trust-icon">🔒</span>
+          <div class="rn-product__trust-text">
+            <strong>Secure Payment</strong>
+            Safe & Encrypted
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion Details -->
+      <div class="rn-accordion">
+
+        {%- if product.description != blank -%}
+          <div class="rn-accordion__item open">
+            <button class="rn-accordion__trigger" onclick="rnToggleAccordion(this)" type="button">
+              <span class="rn-accordion__title">Product Details</span>
+              <span class="rn-accordion__icon">+</span>
+            </button>
+            <div class="rn-accordion__body">
+              {{ product.description }}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="rn-accordion__item">
+          <button class="rn-accordion__trigger" onclick="rnToggleAccordion(this)" type="button">
+            <span class="rn-accordion__title">Size Guide</span>
+            <span class="rn-accordion__icon">+</span>
+          </button>
+          <div class="rn-accordion__body">
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+              <thead>
+                <tr style="border-bottom:1px solid #ebebeb;">
+                  <th style="padding:8px 0;text-align:left;font-weight:500;letter-spacing:0.08em;">Size</th>
+                  <th style="padding:8px 0;text-align:center;font-weight:500;letter-spacing:0.08em;">Chest</th>
+                  <th style="padding:8px 0;text-align:center;font-weight:500;letter-spacing:0.08em;">Waist</th>
+                  <th style="padding:8px 0;text-align:center;font-weight:500;letter-spacing:0.08em;">Length</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #f5f5f5;"><td style="padding:7px 0;">XS</td><td style="text-align:center;">34"</td><td style="text-align:center;">32"</td><td style="text-align:center;">50"</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5;"><td style="padding:7px 0;">S</td><td style="text-align:center;">36"</td><td style="text-align:center;">34"</td><td style="text-align:center;">52"</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5;"><td style="padding:7px 0;">M</td><td style="text-align:center;">38"</td><td style="text-align:center;">36"</td><td style="text-align:center;">52"</td></tr>
+                <tr style="border-bottom:1px solid #f5f5f5;"><td style="padding:7px 0;">L</td><td style="text-align:center;">40"</td><td style="text-align:center;">38"</td><td style="text-align:center;">54"</td></tr>
+                <tr><td style="padding:7px 0;">XL</td><td style="text-align:center;">42"</td><td style="text-align:center;">40"</td><td style="text-align:center;">54"</td></tr>
+              </tbody>
+            </table>
+            <p style="margin-top:12px;font-size:0.8rem;color:#888;">All measurements are in inches. If you're between sizes, we recommend sizing up.</p>
+          </div>
+        </div>
+
+        <div class="rn-accordion__item">
+          <button class="rn-accordion__trigger" onclick="rnToggleAccordion(this)" type="button">
+            <span class="rn-accordion__title">Shipping & Returns</span>
+            <span class="rn-accordion__icon">+</span>
+          </button>
+          <div class="rn-accordion__body">
+            <ul>
+              <li>Free delivery on orders above Rs. 3,000 within Pakistan</li>
+              <li>Standard delivery: 3–5 business days</li>
+              <li>Express delivery: 1–2 business days (additional charges apply)</li>
+              <li>Easy returns within 7 days of delivery</li>
+              <li>Items must be unworn, unwashed with original tags attached</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="rn-accordion__item">
+          <button class="rn-accordion__trigger" onclick="rnToggleAccordion(this)" type="button">
+            <span class="rn-accordion__title">Care Instructions</span>
+            <span class="rn-accordion__icon">+</span>
+          </button>
+          <div class="rn-accordion__body">
+            <ul>
+              <li>Hand wash or machine wash cold (30°C)</li>
+              <li>Do not bleach or tumble dry</li>
+              <li>Iron on low heat</li>
+              <li>Dry in shade to preserve colours</li>
+              <li>Dry clean recommended for heavily embroidered pieces</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  {%- assign related_products = collections.all.products | where: 'id', product.id | map: 'id' -%}
+  {%- assign all_products = collections.all.products -%}
+  {%- assign shown = 0 -%}
+  {%- assign has_related = false -%}
+  {%- for p in all_products limit: 20 -%}
+    {%- if p.id != product.id and shown < 4 -%}
+      {%- assign has_related = true -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if has_related -%}
+  <div class="rn-related">
+    <h2 class="rn-related__title">You May Also Like</h2>
+    <div class="rn-related__grid">
+      {%- assign count = 0 -%}
+      {%- for p in collections.all.products -%}
+        {%- if p.id != product.id and count < 4 -%}
+          <a class="rn-related__card" href="{{ p.url }}">
+            <div class="rn-related__card-img">
+              {%- if p.featured_image -%}
+                <img
+                  src="{{ p.featured_image | image_url: width: 500 }}"
+                  alt="{{ p.featured_image.alt | escape | default: p.title }}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+            </div>
+            <div class="rn-related__card-name">{{ p.title }}</div>
+            <div class="rn-related__card-price">{{ p.price_min | money }}</div>
+          </a>
+          {%- assign count = count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- endif -%}
+
+</div>
+
+<!-- Toast -->
+<div class="rn-toast" id="rn-toast">Added to cart!</div>
