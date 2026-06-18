@@ -1,0 +1,354 @@
+{% comment %}
+  Rang Nisa - About Page Section
+{% endcomment %}
+
+{% stylesheet %}
+.rn-about {
+  font-family: var(--font-body-family, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+  color: #1a1a1a;
+}
+
+/* Hero Banner */
+.rn-about-hero {
+  background: #f9f5f2;
+  padding: 80px 20px 70px;
+  text-align: center;
+}
+.rn-about-hero__eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 16px;
+}
+.rn-about-hero__title {
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+  line-height: 1.1;
+}
+@media (max-width: 600px) {
+  .rn-about-hero__title { font-size: 2rem; }
+}
+.rn-about-hero__tagline {
+  font-size: 1rem;
+  color: #666;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* Sections container */
+.rn-about-body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 70px 20px;
+}
+
+/* Section block */
+.rn-about-section {
+  margin-bottom: 56px;
+}
+.rn-about-section__label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+.rn-about-section__heading {
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  color: #1a1a1a;
+}
+.rn-about-section__text {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: #444;
+}
+.rn-about-divider {
+  border: none;
+  border-top: 1px solid #ebebeb;
+  margin: 56px 0;
+}
+
+/* Values grid */
+.rn-about-values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+@media (max-width: 600px) {
+  .rn-about-values { grid-template-columns: 1fr 1fr; }
+}
+.rn-about-value {
+  padding: 22px 18px;
+  background: #f9f9f9;
+  border: 1px solid #ebebeb;
+  text-align: center;
+}
+.rn-about-value__icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 8px;
+}
+.rn-about-value__title {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 6px;
+}
+.rn-about-value__desc {
+  font-size: 0.8rem;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Stats row */
+.rn-about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: #ebebeb;
+  margin: 40px 0;
+  border: 1px solid #ebebeb;
+}
+@media (max-width: 600px) {
+  .rn-about-stats { grid-template-columns: 1fr; }
+}
+.rn-about-stat {
+  background: #fff;
+  padding: 28px 20px;
+  text-align: center;
+}
+.rn-about-stat__number {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  display: block;
+}
+.rn-about-stat__label {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* Contact CTA at bottom */
+.rn-about-cta {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 60px 20px;
+  text-align: center;
+}
+.rn-about-cta__title {
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+.rn-about-cta__text {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+.rn-about-cta__btn {
+  display: inline-block;
+  padding: 14px 36px;
+  border: 1px solid #fff;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s;
+  margin: 6px;
+}
+.rn-about-cta__btn:hover { background: #fff; color: #1a1a1a; }
+.rn-about-cta__btn--filled {
+  background: #fff;
+  color: #1a1a1a;
+}
+.rn-about-cta__btn--filled:hover { background: transparent; color: #fff; }
+
+/* Contact form inside about page */
+.rn-about-contact {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px 70px;
+}
+.rn-about-contact__title {
+  text-align: center;
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 60px 0 8px;
+}
+.rn-about-contact__subtitle {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  margin: 0 0 36px;
+}
+{% endstylesheet %}
+
+<!-- Hero -->
+<div class="rn-about-hero">
+  <p class="rn-about-hero__eyebrow">Est. 2020 &middot; Lahore, Pakistan</p>
+  <h1 class="rn-about-hero__title">About Rang Nisa</h1>
+  <p class="rn-about-hero__tagline">"Where colours tell stories of grace, culture, and modern femininity."</p>
+</div>
+
+<!-- Body -->
+<div class="rn-about-body">
+
+  <!-- Who We Are -->
+  <div class="rn-about-section">
+    <p class="rn-about-section__label">Our Story</p>
+    <h2 class="rn-about-section__heading">Who We Are</h2>
+    <p class="rn-about-section__text">
+      Rang Nisa was born from a deep love for the art of Pakistani textile craftsmanship and a vision to make premium women's fashion accessible to every woman.
+      Founded in Lahore, we celebrate the richness of our cultural heritage — from hand-embroidered fabrics to fine cotton lawns — while embracing the clean lines of contemporary design.
+      Our name, <em>Rang Nisa</em>, means "the colours of women" — a tribute to the vibrancy, strength, and elegance that defines every woman we dress.
+    </p>
+  </div>
+
+  <hr class="rn-about-divider">
+
+  <!-- Stats -->
+  <div class="rn-about-stats">
+    <div class="rn-about-stat">
+      <span class="rn-about-stat__number">100+</span>
+      <div class="rn-about-stat__label">Designs per season</div>
+    </div>
+    <div class="rn-about-stat">
+      <span class="rn-about-stat__number">5K+</span>
+      <div class="rn-about-stat__label">Happy customers</div>
+    </div>
+    <div class="rn-about-stat">
+      <span class="rn-about-stat__number">100%</span>
+      <div class="rn-about-stat__label">Authentic fabrics</div>
+    </div>
+  </div>
+
+  <hr class="rn-about-divider">
+
+  <!-- Vision -->
+  <div class="rn-about-section">
+    <p class="rn-about-section__label">Our Vision</p>
+    <h2 class="rn-about-section__heading">Crafted for Every Woman</h2>
+    <p class="rn-about-section__text">
+      We believe every woman deserves clothing that honours her individuality. Our collections span casual everyday wear to beautifully embroidered formal pieces — all crafted with attention to fabric quality, precise stitching, and thoughtful design.
+      Whether you're looking for a breezy summer lawn suit, an elegant stitched kurta, or a statement embroidered piece for a special occasion, Rang Nisa has something made just for you.
+    </p>
+  </div>
+
+  <hr class="rn-about-divider">
+
+  <!-- Values -->
+  <div class="rn-about-section">
+    <p class="rn-about-section__label">What We Stand For</p>
+    <h2 class="rn-about-section__heading">Our Values</h2>
+    <div class="rn-about-values">
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Quality</div>
+        <p class="rn-about-value__desc">Premium fabrics, expert stitching, lasting wear</p>
+      </div>
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Authenticity</div>
+        <p class="rn-about-value__desc">True to Pakistani craft and cultural heritage</p>
+      </div>
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Inclusivity</div>
+        <p class="rn-about-value__desc">Fashion for every age, size, and lifestyle</p>
+      </div>
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Elegance</div>
+        <p class="rn-about-value__desc">Timeless designs with a modern sensibility</p>
+      </div>
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Customer First</div>
+        <p class="rn-about-value__desc">Your satisfaction is at the heart of everything</p>
+      </div>
+      <div class="rn-about-value">
+        <span class="rn-about-value__icon">✦</span>
+        <div class="rn-about-value__title">Transparency</div>
+        <p class="rn-about-value__desc">Honest pricing, real fabrics, no compromises</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA Banner -->
+<div class="rn-about-cta">
+  <h2 class="rn-about-cta__title">Explore Our Collections</h2>
+  <p class="rn-about-cta__text">Discover the latest arrivals in lawn, embroidery, casual wear and more.</p>
+  <a href="/collections" class="rn-about-cta__btn rn-about-cta__btn--filled">Shop Collections</a>
+  <a href="/pages/contact" class="rn-about-cta__btn">Contact Us</a>
+</div>
+
+<!-- Contact Section -->
+<div class="rn-about-contact">
+  <h2 class="rn-about-contact__title">Get in Touch</h2>
+  <p class="rn-about-contact__subtitle">Questions? We're always happy to help.</p>
+
+  {% form 'contact' %}
+    {% if form.posted_successfully? %}
+      <div style="background:#f4faf4;border:1px solid #b2d8b2;color:#2e7d32;padding:14px 18px;font-size:0.88rem;margin-bottom:22px;">
+        ✓ Thank you! We'll be in touch shortly.
+      </div>
+    {% endif %}
+    {% if form.errors %}
+      <div style="color:#c0392b;font-size:0.85rem;margin-bottom:16px;padding:12px;border:1px solid #f5c6cb;background:#fff5f5;">
+        {{ form.errors | default_errors }}
+      </div>
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <label style="display:block;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:#1a1a1a;margin-bottom:7px;font-weight:500;" for="AboutContactName">Name</label>
+        <input style="border:1px solid #d0d0d0;padding:11px 13px;font-size:0.9rem;width:100%;box-sizing:border-box;outline:none;font-family:inherit;border-radius:0;-webkit-appearance:none;" type="text" id="AboutContactName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" placeholder="Your name">
+      </div>
+      <div>
+        <label style="display:block;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:#1a1a1a;margin-bottom:7px;font-weight:500;" for="AboutContactEmail">Email *</label>
+        <input style="border:1px solid #d0d0d0;padding:11px 13px;font-size:0.9rem;width:100%;box-sizing:border-box;outline:none;font-family:inherit;border-radius:0;-webkit-appearance:none;" type="email" id="AboutContactEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" placeholder="your@email.com" required>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:#1a1a1a;margin-bottom:7px;font-weight:500;" for="AboutContactMessage">Message *</label>
+      <textarea style="border:1px solid #d0d0d0;padding:11px 13px;font-size:0.9rem;width:100%;box-sizing:border-box;outline:none;font-family:inherit;border-radius:0;-webkit-appearance:none;min-height:120px;resize:vertical;" rows="5" id="AboutContactMessage" name="contact[body]" placeholder="Your message..." required>{{ form.body }}</textarea>
+    </div>
+    <button type="submit" style="display:block;width:100%;padding:14px 30px;background:#1a1a1a;color:#fff;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:inherit;font-weight:500;">Send Message</button>
+  {% endform %}
+</div>
+
+{% schema %}
+{
+  "name": "About Page",
+  "tag": "section",
+  "class": "section",
+  "presets": [{"name": "About Page"}]
+}
+{% endschema %}
