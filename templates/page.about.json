@@ -1,80 +1,20 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "page_header": {
-      "type": "page-header",
-      "settings": {
-        "eyebrow": "Our story",
-        "heading": "Made with intention",
-        "subheading": "<p>Rang Nisa is a study in restraint — timeless silhouettes, considered fabrics, and a quiet confidence designed to live in your wardrobe for years, not seasons.</p>",
-        "text_alignment": "center",
-        "color_scheme": "scheme-1",
-        "padding_top": 96,
-        "padding_bottom": 48
-      }
-    },
-    "story": {
-      "type": "text-with-image-split",
-      "settings": {
-        "image_position": "right",
-        "heading": "Where it began",
-        "description": "<p>We started Rang Nisa with a simple belief: that getting dressed should feel effortless. Every piece is drawn from a pared-back palette and cut to move with you — refined enough for the occasion, easy enough for every day.</p>",
-        "button_label": "Shop the collection",
-        "button_link": "shopify://collections/all",
-        "color_scheme": "scheme-1",
-        "padding_top": 64,
-        "padding_bottom": 64
-      }
-    },
-    "values": {
-      "type": "about-values",
-      "blocks": {
-        "v1": {
-          "type": "value_item",
-          "settings": {
-            "number": "01",
-            "heading": "Considered design",
-            "description": "<p>Each garment begins as a sketch and ends only when nothing more can be removed. Minimal by intent, never by accident.</p>"
-          }
-        },
-        "v2": {
-          "type": "value_item",
-          "settings": {
-            "number": "02",
-            "heading": "Honest materials",
-            "description": "<p>We source natural, durable fabrics that age gracefully and feel as good as they look.</p>"
-          }
-        },
-        "v3": {
-          "type": "value_item",
-          "settings": {
-            "number": "03",
-            "heading": "Made to last",
-            "description": "<p>Slow fashion over fast trends. We make fewer pieces, better, so you buy less and keep them longer.</p>"
-          }
-        }
-      },
-      "block_order": ["v1", "v2", "v3"],
-      "settings": {
-        "heading": "What we stand for",
-        "columns": "3",
-        "color_scheme": "scheme-1",
-        "padding_top": 64,
-        "padding_bottom": 64
-      }
-    },
-    "craft": {
-      "type": "text-with-image-split",
-      "settings": {
-        "image_position": "left",
-        "heading": "The craft",
-        "description": "<p>From the first pattern to the final stitch, our pieces are produced in small runs with makers we know by name. Quality you can feel in the seams.</p>",
-        "button_label": "",
-        "button_link": "",
-        "color_scheme": "scheme-1",
-        "padding_top": 64,
-        "padding_bottom": 96
-      }
+    "rn_about": {
+      "type": "rn-about-page",
+      "settings": {}
     }
   },
-  "order": ["page_header", "story", "values", "craft"]
+  "order": [
+    "rn_about"
+  ]
 }
