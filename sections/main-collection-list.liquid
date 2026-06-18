@@ -9,33 +9,39 @@
   .rn-col-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   @media(max-width:900px){.rn-col-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
   @media(max-width:480px){.rn-col-grid{grid-template-columns:repeat(2,1fr);gap:8px}.rn-col-list{padding:30px 12px}.rn-col-list h1{font-size:1.4rem;margin-bottom:24px}}
-  .rn-col-card{position:relative;display:block;overflow:hidden;text-decoration:none;background:#f0ece8;aspect-ratio:3/4}
+  .rn-col-card{position:relative;display:block;overflow:hidden;text-decoration:none;background:#2d2523;aspect-ratio:3/4}
   .rn-col-card:hover img{transform:scale(1.05)}
   .rn-col-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
-  .rn-col-card__over{position:absolute;bottom:0;left:0;right:0;padding:18px 14px 16px;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 100%)}
+  .rn-col-card__over{position:absolute;bottom:0;left:0;right:0;padding:18px 14px 16px;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,0) 100%)}
   .rn-col-card__name{color:#fff;font-size:.9rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin:0 0 3px}
-  .rn-col-card__cnt{color:rgba(255,255,255,.75);font-size:.78rem;letter-spacing:.03em;margin:0}
-  .rn-col-card__ph{width:100%;height:100%;background:linear-gradient(135deg,#e8e0d8,#d4c8bc);display:flex;align-items:center;justify-content:center}
-  .rn-col-card__ph svg{width:56px;height:56px;fill:rgba(0,0,0,.12)}
+  .rn-col-card__cnt{color:rgba(255,255,255,.8);font-size:.78rem;letter-spacing:.03em;margin:0}
+  .rn-col-below{padding:10px 2px 0;text-align:left}
+  .rn-col-below a{display:block;font-size:.82rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#1a1a1a;text-decoration:none;margin-bottom:2px}
+  .rn-col-below a:hover{text-decoration:underline}
+  .rn-col-below span{font-size:.74rem;color:#777}
 </style>
 <div class="rn-col-list">
   <h1>{{ page_title }}</h1>
   <div class="rn-col-grid">
     {% for collection in section_collections limit: max_items %}
       {% unless collection.handle == 'frontpage' %}
-        <a href="{{ collection.url }}" class="rn-col-card">
-          {% if collection.image %}
-            <img src="{{ collection.image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy" width="600" height="800">
-          {% elsif collection.products.first.featured_image %}
-            <img src="{{ collection.products.first.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy" width="600" height="800">
-          {% else %}
-            <div class="rn-col-card__ph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>
-          {% endif %}
-          <div class="rn-col-card__over">
-            <p class="rn-col-card__name">{{ collection.title }}</p>
-            <p class="rn-col-card__cnt">{{ collection.products_count }} items</p>
+        <div>
+          <a href="{{ collection.url }}" class="rn-col-card">
+            {% if collection.image %}
+              <img src="{{ collection.image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy" width="600" height="800">
+            {% elsif collection.products.first.featured_image %}
+              <img src="{{ collection.products.first.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" loading="lazy" width="600" height="800">
+            {% endif %}
+            <div class="rn-col-card__over">
+              <p class="rn-col-card__name">{{ collection.title }}</p>
+              <p class="rn-col-card__cnt">{{ collection.products_count }} items</p>
+            </div>
+          </a>
+          <div class="rn-col-below">
+            <a href="{{ collection.url }}">{{ collection.title }}</a>
+            <span>{{ collection.products_count }} items</span>
           </div>
-        </a>
+        </div>
       {% endunless %}
     {% endfor %}
   </div>
