@@ -1,0 +1,286 @@
+{% comment %}
+  Rang Nisa - Contact Page Section
+{% endcomment %}
+
+{% stylesheet %}
+.rn-contact-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+  font-family: var(--font-body-family, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+}
+.rn-contact-page__title {
+  text-align: center;
+  font-size: 2.2rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0 0 10px;
+  color: #1a1a1a;
+}
+.rn-contact-page__subtitle {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  margin: 0 0 50px;
+}
+.rn-contact-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 60px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .rn-contact-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+.rn-contact-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+@media (max-width: 480px) {
+  .rn-contact-form__row { grid-template-columns: 1fr; }
+}
+.rn-contact-form__group { margin-bottom: 18px; }
+.rn-contact-form__label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.rn-contact-form__input,
+.rn-contact-form__textarea {
+  border: 1px solid #d0d0d0;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+.rn-contact-form__input:focus,
+.rn-contact-form__textarea:focus { border-color: #1a1a1a; }
+.rn-contact-form__textarea { min-height: 155px; resize: vertical; }
+.rn-contact-form__submit {
+  display: block;
+  width: 100%;
+  padding: 15px 30px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+  font-weight: 500;
+  margin-top: 6px;
+}
+.rn-contact-form__submit:hover { background: #3a3a3a; }
+.rn-contact-success {
+  background: #f4faf4;
+  border: 1px solid #b2d8b2;
+  color: #2e7d32;
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  margin-bottom: 22px;
+}
+.rn-contact-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid #f5c6cb;
+  background: #fff5f5;
+}
+.rn-contact-info { padding-top: 4px; }
+.rn-contact-info__heading {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  font-weight: 500;
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.rn-contact-info__block { margin-bottom: 26px; }
+.rn-contact-info__block-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 0 0 5px;
+  font-weight: 500;
+}
+.rn-contact-info__block-text {
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  line-height: 1.65;
+}
+.rn-contact-info__block-text a {
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+.rn-contact-info__block-text a:hover { opacity: 0.6; border-color: transparent; }
+.rn-hours-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.rn-hours-table td { padding: 4px 0; color: #555; }
+.rn-hours-table td:last-child { text-align: right; color: #1a1a1a; }
+.rn-contact-social a {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  text-decoration: none;
+  border: 1px solid #1a1a1a;
+  padding: 7px 14px;
+  margin: 4px 4px 4px 0;
+  transition: background 0.2s, color 0.2s;
+}
+.rn-contact-social a:hover { background: #1a1a1a; color: #fff; }
+{% endstylesheet %}
+
+<div class="rn-contact-page">
+  <h1 class="rn-contact-page__title">Contact Us</h1>
+  <p class="rn-contact-page__subtitle">We'd love to hear from you — reach out anytime.</p>
+
+  <div class="rn-contact-layout">
+    <!-- FORM COLUMN -->
+    <div>
+      {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <div class="rn-contact-success">
+            ✓ Thank you for your message! We'll get back to you within 24 hours.
+          </div>
+        {% endif %}
+
+        {% if form.errors %}
+          <div class="rn-contact-error">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+
+        <div class="rn-contact-form__row">
+          <div>
+            <label class="rn-contact-form__label" for="ContactFormName">Name</label>
+            <input
+              class="rn-contact-form__input"
+              autocomplete="name"
+              type="text"
+              id="ContactFormName"
+              name="contact[name]"
+              value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+              placeholder="Your full name"
+            >
+          </div>
+          <div>
+            <label class="rn-contact-form__label" for="ContactFormPhone">Phone</label>
+            <input
+              class="rn-contact-form__input"
+              type="tel"
+              id="ContactFormPhone"
+              name="contact[phone]"
+              value="{{ form.phone }}"
+              placeholder="03XX-XXXXXXX"
+            >
+          </div>
+        </div>
+
+        <div class="rn-contact-form__group">
+          <label class="rn-contact-form__label" for="ContactFormEmail">
+            Email <span style="color:#c0392b;font-size:0.9em">*</span>
+          </label>
+          <input
+            class="rn-contact-form__input"
+            autocomplete="email"
+            type="email"
+            id="ContactFormEmail"
+            name="contact[email]"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            placeholder="your@email.com"
+            required
+          >
+        </div>
+
+        <div class="rn-contact-form__group">
+          <label class="rn-contact-form__label" for="ContactFormMessage">
+            Message <span style="color:#c0392b;font-size:0.9em">*</span>
+          </label>
+          <textarea
+            class="rn-contact-form__textarea"
+            rows="7"
+            id="ContactFormMessage"
+            name="contact[body]"
+            placeholder="How can we help you?"
+            required
+          >{{ form.body }}</textarea>
+        </div>
+
+        <button type="submit" class="rn-contact-form__submit">Send Message</button>
+      {% endform %}
+    </div>
+
+    <!-- INFO COLUMN -->
+    <div class="rn-contact-info">
+      <div class="rn-contact-info__heading">Store Information</div>
+
+      <div class="rn-contact-info__block">
+        <div class="rn-contact-info__block-label">Email</div>
+        <div class="rn-contact-info__block-text">
+          <a href="mailto:info@rangnisa.com">info@rangnisa.com</a>
+        </div>
+      </div>
+
+      <div class="rn-contact-info__block">
+        <div class="rn-contact-info__block-label">Phone / WhatsApp</div>
+        <div class="rn-contact-info__block-text">
+          <a href="tel:+923001234567">+92 300 123 4567</a>
+        </div>
+      </div>
+
+      <div class="rn-contact-info__block">
+        <div class="rn-contact-info__block-label">Location</div>
+        <div class="rn-contact-info__block-text">Lahore, Pakistan</div>
+      </div>
+
+      <div class="rn-contact-info__block">
+        <div class="rn-contact-info__block-label">Business Hours</div>
+        <table class="rn-hours-table">
+          <tr><td>Mon – Sat</td><td>10:00 AM – 8:00 PM</td></tr>
+          <tr><td>Sunday</td><td>Closed</td></tr>
+        </table>
+      </div>
+
+      <div class="rn-contact-info__block">
+        <div class="rn-contact-info__block-label">Follow Us</div>
+        <div class="rn-contact-social">
+          <a href="https://instagram.com/rangnisa" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://facebook.com/rangnisa" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact Form",
+  "tag": "section",
+  "class": "section",
+  "presets": [{"name": "Contact Form"}]
+}
+{% endschema %}
