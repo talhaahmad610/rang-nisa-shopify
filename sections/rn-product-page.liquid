@@ -894,3 +894,190 @@
 
 <!-- Toast -->
 <div class="rn-toast" id="rn-toast">Added to cart!</div>
+
+{% javascript %}
+// =============================================
+// Rang Nisa Product Page JS
+// =============================================
+
+// Gallery: switch main image
+function rnSwitchImage(index, sectionId) {
+  var featured = document.getElementById('rn-featured-img-' + sectionId);
+  var thumbs = document.querySelectorAll('#rn-thumbs-' + sectionId + ' .rn-gallery__thumb');
+  var clickedThumb = thumbs[index];
+  if (!clickedThumb || !featured) return;
+  var imgEl = clickedThumb.querySelector('img');
+  if (!imgEl) return;
+  // Build high-res URL from thumbnail src
+  var src = imgEl.src.replace(/width=\d+/, 'width=900');
+  featured.style.opacity = '0.4';
+  setTimeout(function() {
+    featured.src = src;
+    featured.style.opacity = '1';
+  }, 150);
+  // Update active thumb
+  thumbs.forEach(function(t) { t.classList.remove('active'); });
+  clickedThumb.classList.add('active');
+}
+
+// Option selector (size/color buttons)
+function rnSelectOption(btn, sectionId) {
+  var optIdx = btn.getAttribute('data-option-index');
+  var value = btn.getAttribute('data-value');
+  // Deselect siblings
+  var parent = btn.parentElement;
+  parent.querySelectorAll('[data-option-index="' + optIdx + '"]').forEach(function(b) {
+    b.classList.remove('selected');
+  });
+  btn.classList.add('selected');
+  // Update label
+  var labelSpan = document.getElementById('rn-selected-' + sectionId + '-' + optIdx);
+  if (labelSpan) labelSpan.textContent = value;
+  // Trigger variant update
+  rnUpdateVariant(sectionId);
+}
+
+function rnSelectOptionFromSelect(sel, sectionId) {
+  var optIdx = sel.getAttribute('data-option-index');
+  var value = sel.value;
+  var labelSpan = document.getElementById('rn-selected-' + sectionId + '-' + optIdx);
+  if (labelSpan) labelSpan.textContent = value;
+  rnUpdateVariant(sectionId);
+}
+
+// Find matching variant from selected options
+function rnUpdateVariant(sectionId) {
+  var form = document.getElementById('rn-product-form-' + sectionId);
+  if (!form) return;
+  // Collect selected option values
+  var selectedOptions = [];
+  var optionGroups = form.querySelectorAll('[data-option-index]');
+  var optMap = {};
+  optionGroups.forEach(function(el) {
+    var idx = parseInt(el.getAttribute('data-option-index'));
+    if (el.tagName === 'SELECT') {
+      optMap[idx] = el.value;
+    } else if (el.classList.contains('selected')) {
+      optMap[idx] = el.getAttribute('data-value');
+    }
+  });
+  var maxIdx = Math.max.apply(null, Object.keys(optMap).map(Number));
+  for (var i = 0; i <= maxIdx; i++) {
+    selectedOptions.push(optMap[i] || '');
+  }
+  // Find variant in page data
+  var variantData = window.__rnVariants__;
+  if (!variantData) return;
+  var match = null;
+  for (var v = 0; v < variantData.length; v++) {
+    var variant = variantData[v];
+    var opts = [variant.option1, variant.option2, variant.option3].filter(Boolean);
+    var matches = selectedOptions.every(function(sel, i) { return !sel || opts[i] === sel; });
+    if (matches) { match = variant; break; }
+  }
+  if (match) {
+    // Update hidden input
+    var varIdInput = document.getElementById('rn-variant-id-' + sectionId);
+    if (varIdInput) varIdInput.value = match.id;
+    // Update ATC button
+    var atcBtn = document.getElementById('rn-atc-' + sectionId);
+    if (atcBtn) {
+      atcBtn.disabled = !match.available;
+      atcBtn.textContent = match.available ? 'Add to Cart' : 'Sold Out';
+    }
+    // Update price
+    var priceRow = document.getElementById('rn-price-' + sectionId);
+    if (priceRow && match.price !== undefined) {
+      var formatter = new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR', minimumFractionDigits: 2 });
+      var priceStr = 'Rs.' + (match.price / 100).toFixed(2);
+      if (match.compare_at_price && match.compare_at_price > match.price) {
+        var cmpStr = 'Rs.' + (match.compare_at_price / 100).toFixed(2);
+        priceRow.innerHTML = '<span class="rn-product__price rn-product__price--sale">' + priceStr + '</span><span class="rn-product__price--compare">' + cmpStr + '</span><span class="rn-product__badge">Sale</span>';
+      } else {
+        priceRow.innerHTML = '<span class="rn-product__price">' + priceStr + '</span>';
+      }
+    }
+    // Update main image if variant has image
+    if (match.featured_image) {
+      var imgSrc = match.featured_image.src;
+      // Find which thumb matches
+      var thumbs = document.querySelectorAll('#rn-thumbs-' + sectionId + ' .rn-gallery__thumb img');
+      thumbs.forEach(function(img, idx) {
+        if (img.src.indexOf(match.featured_image.src.split('?')[0].split('/').pop().split('.')[0]) > -1) {
+          rnSwitchImage(idx, sectionId);
+        }
+      });
+    }
+  }
+}
+
+// Quantity control
+function rnQty(delta, sectionId) {
+  var input = document.getElementById('rn-qty-' + sectionId);
+  if (!input) return;
+  var val = parseInt(input.value) + delta;
+  if (val < 1) val = 1;
+  input.value = val;
+}
+
+// Accordion
+function rnToggleAccordion(btn) {
+  var item = btn.closest('.rn-accordion__item');
+  item.classList.toggle('open');
+}
+
+// Wishlist
+function rnWishlist(btn) {
+  btn.innerHTML = '<span>♥</span> Wishlisted';
+  btn.style.color = '#c0392b';
+  btn.style.borderColor = '#c0392b';
+}
+
+// Share
+function rnShare() {
+  if (navigator.share) {
+    navigator.share({ title: document.title, url: window.location.href });
+  } else {
+    navigator.clipboard && navigator.clipboard.writeText(window.location.href);
+    rnShowToast('Link copied!');
+  }
+}
+
+// Toast
+function rnShowToast(msg) {
+  var toast = document.getElementById('rn-toast');
+  if (!toast) return;
+  toast.textContent = msg || 'Added to cart!';
+  toast.classList.add('visible');
+  setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+}
+
+// Intercept ATC form submit for toast
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-type="add-to-cart-form"]').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      var btn = form.querySelector('[name="add"]');
+      if (btn && !btn.disabled) {
+        setTimeout(function() { rnShowToast('Added to cart!'); }, 600);
+      }
+    });
+  });
+});
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product Page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [{"name": "Product Page"}]
+}
+{% endschema %}
