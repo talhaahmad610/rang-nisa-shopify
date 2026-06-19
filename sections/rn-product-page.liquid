@@ -575,6 +575,7 @@
             <div
               class="rn-gallery__thumb{% if forloop.first %} active{% endif %}"
               data-index="{{ forloop.index0 }}"
+              data-full="{{ media | image_url: width: 1000 }}"
               onclick="rnSwitchImage({{ forloop.index0 }}, '{{ section.id }}')"
             >
               <img
@@ -914,17 +915,8 @@
     var thumbImg = thumbs[index].querySelector('img');
     if (!thumbImg) return;
 
-    // Build a high-res URL: replace width param or append it
-    var src = thumbImg.src;
-    // Shopify image URLs look like: /cdn/.../image.jpg?v=123&width=120
-    // We want width=900
-    if (src.indexOf('width=') > -1) {
-      src = src.replace(/width=d+/, 'width=900');
-    } else if (src.indexOf('?') > -1) {
-      src = src + '&width=900';
-    } else {
-      src = src + '?width=900';
-    }
+    // Use data-full attribute (Shopify-generated full-res URL, set in Liquid)
+    var src = thumbs[index].getAttribute('data-full') || thumbImg.src;
 
     // Fade swap
     featured.style.opacity = '0.3';
