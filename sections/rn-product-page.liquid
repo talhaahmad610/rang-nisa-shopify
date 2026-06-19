@@ -912,18 +912,20 @@
     var thumbs = document.querySelectorAll('#rn-thumbs-' + sectionId + ' .rn-gallery__thumb');
     if (!featured || !thumbs[index]) return;
 
-    var thumbImg = thumbs[index].querySelector('img');
-    if (!thumbImg) return;
+    // Get the full-res URL stored as data attribute (set in Liquid)
+    var newSrc = thumbs[index].getAttribute('data-full');
+    if (!newSrc) return;
 
-    // Use data-full attribute (Shopify-generated full-res URL, set in Liquid)
-    var src = thumbs[index].getAttribute('data-full') || thumbImg.src;
+    // CRITICAL: clear srcset and sizes so browser uses our src
+    // (if srcset is present, browser ignores src changes)
+    featured.removeAttribute('srcset');
+    featured.removeAttribute('sizes');
 
-    // Fade swap
-    featured.style.opacity = '0.3';
-    featured.onload = function() { featured.style.opacity = '1'; };
-    featured.src = src;
+    // Set the new image src directly
+    featured.src = newSrc;
+    featured.style.opacity = '1';
 
-    // Update active thumb highlight
+    // Update active thumbnail border
     thumbs.forEach(function(t) { t.classList.remove('active'); });
     thumbs[index].classList.add('active');
   }
