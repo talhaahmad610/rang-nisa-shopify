@@ -509,7 +509,7 @@
 }
 .rn-related__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
 }
 @media (max-width: 900px) { .rn-related__grid { grid-template-columns: repeat(2, 1fr); } }
@@ -518,6 +518,7 @@
   text-decoration: none;
   color: #1a1a1a;
   display: block;
+  min-width: 0;
 }
 .rn-related__card-img {
   position: relative;
