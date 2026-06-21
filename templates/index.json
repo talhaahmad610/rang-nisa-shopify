@@ -40,6 +40,7 @@
     "text_with_image_split": {
       "type": "text-with-image-split",
       "settings": {
+        "image": "shopify://shop_images/Image_20260622_010513.jpg",
         "image_position": "right",
         "heading": "Dressing every woman, every story.",
         "description": "<p>Rang Nisa is a curated women's label rooted in the beauty of both worlds — the grace of Eastern craftsmanship and the ease of Western silhouettes. Each piece is chosen to feel intentional, wearable, and quietly confident.</p>",
