@@ -51,6 +51,12 @@
         "padding_bottom": 80
       }
     },
+        "vol_02_banner": {
+                "type": "vol-02-banner",
+                      "settings": {
+                              "button_link": "/products/vol-02-embroidery-cotton-suit"
+                                    }
+        },
     "faq": {
       "type": "faq",
       "blocks": {
@@ -103,13 +109,7 @@
         "padding_top": 40,
         "padding_bottom": 40
       }
-    },
-        "vol_02_banner": {
-                "type": "vol-02-banner",
-                      "settings": {
-                              "button_link": "/products/turquoise-printed-kurta-farshi-shalwar-set"
-                                    }
-        }
+    }
   },
   "order": [
     "hero_video_banner",
