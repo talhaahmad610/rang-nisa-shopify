@@ -1,69 +1,151 @@
 {%- assign vol02 = all_products['vol-02-embroidery-cotton-suit'] -%}
-{%- assign display_image = section.settings.image | default: vol02.featured_image -%}
+{%- if vol02 != blank -%}
+{%- assign first_variant = vol02.variants.first -%}
+{%- assign on_sale = false -%}
+{%- if first_variant.compare_at_price > first_variant.price -%}{%- assign on_sale = true -%}{%- endif -%}
+
 <style>
-  .rn-vol02 { background-color: #1a1a1a; padding: 0; overflow: hidden; }
-  .rn-vol02__inner { display: flex; align-items: stretch; min-height: 520px; }
-  .rn-vol02__image-side { flex: 1; position: relative; overflow: hidden; }
-  .rn-vol02__image-side img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .rn-vol02__content-side { flex: 1; background-color: #1a1a1a; display: flex; flex-direction: column; justify-content: center; padding: 48px 52px; }
-  .rn-vol02__eyebrow { font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: #c9a96e; margin-bottom: 12px; }
-  .rn-vol02__vol-label { font-size: 4.5rem; font-weight: 700; color: #ffffff; line-height: 1; margin-bottom: 4px; }
-  .rn-vol02__vol-sub { font-size: 1.1rem; color: #c9a96e; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
-  .rn-vol02__divider { width: 48px; height: 2px; background-color: #c9a96e; margin-bottom: 20px; }
-  .rn-vol02__title { font-size: 1.4rem; color: #ffffff; font-weight: 500; margin-bottom: 12px; }
-  .rn-vol02__description { font-size: 1rem; color: #b0a898; line-height: 1.7; margin-bottom: 32px; }
-  .rn-vol02__btn { display: inline-block; padding: 14px 36px; background-color: #c9a96e; color: #1a1a1a; text-decoration: none; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; transition: background-color 0.3s ease; }
-  .rn-vol02__btn:hover { background-color: transparent; color: #c9a96e; border: 1px solid #c9a96e; }
-  @media (max-width: 768px) {
-    .rn-vol02__inner { flex-direction: column; }
-    .rn-vol02__image-side { min-height: 320px; }
-    .rn-vol02__content-side { padding: 36px 24px; }
-    .rn-vol02__vol-label { font-size: 3rem; }
+  .rn-fp { background: #ffffff; padding: 60px 0; }
+  .rn-fp__inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 0; align-items: flex-start; }
+
+  /* Thumbnail column */
+  .rn-fp__thumbs { display: flex; flex-direction: column; gap: 10px; width: 90px; flex-shrink: 0; margin-right: 16px; }
+  .rn-fp__thumb { width: 86px; height: 110px; cursor: pointer; border: 2px solid transparent; overflow: hidden; transition: border-color 0.2s; }
+  .rn-fp__thumb.active,
+  .rn-fp__thumb:hover { border-color: #111; }
+  .rn-fp__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+
+  /* Main image */
+  .rn-fp__main-img { flex: 1; max-width: 520px; position: relative; overflow: hidden; background: #f5f0eb; }
+  .rn-fp__main-img img { width: 100%; display: block; object-fit: cover; object-position: top center; aspect-ratio: 3/4; transition: opacity 0.3s ease; }
+  .rn-fp__main-img img.fade { opacity: 0; }
+
+  /* Product details */
+  .rn-fp__details { flex: 1; padding-left: 48px; padding-top: 8px; }
+  .rn-fp__label { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .rn-fp__title { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; margin: 0 0 18px; line-height: 1.2; }
+  .rn-fp__price-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
+  .rn-fp__price-compare { font-size: 1.05rem; color: #999; text-decoration: line-through; }
+  .rn-fp__price-sale { font-size: 1.2rem; font-weight: 600; color: #111; }
+  .rn-fp__price-save { font-size: 0.9rem; color: #c0392b; font-weight: 500; }
+  .rn-fp__shipping { font-size: 0.82rem; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+  .rn-fp__desc { font-size: 0.9rem; color: #444; line-height: 1.75; margin-bottom: 24px; }
+  .rn-fp__sizes-label { font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; color: #111; font-weight: 600; margin-bottom: 12px; }
+  .rn-fp__size-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .rn-fp__size-btn { width: 52px; height: 52px; border: 1.5px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+  .rn-fp__size-btn:hover,
+  .rn-fp__size-btn.selected { border-color: #111; background: #111; color: #fff; }
+  .rn-fp__btn-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .rn-fp__btn-cart { display: block; width: 100%; padding: 16px 24px; background: transparent; border: 1.5px solid #111; color: #111; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; text-decoration: none; cursor: pointer; transition: all 0.25s; }
+  .rn-fp__btn-cart:hover { background: #111; color: #fff; }
+  .rn-fp__btn-buy { display: block; width: 100%; padding: 16px 24px; background: #111; border: 1.5px solid #111; color: #fff; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; text-decoration: none; transition: all 0.25s; }
+  .rn-fp__btn-buy:hover { background: #333; }
+
+  @media (max-width: 900px) {
+    .rn-fp__inner { flex-wrap: wrap; }
+    .rn-fp__thumbs { flex-direction: row; width: 100%; order: 2; margin-right: 0; margin-top: 12px; overflow-x: auto; }
+    .rn-fp__thumb { width: 70px; height: 88px; flex-shrink: 0; }
+    .rn-fp__main-img { max-width: 100%; width: 100%; order: 1; }
+    .rn-fp__details { padding-left: 0; padding-top: 24px; width: 100%; order: 3; }
   }
 </style>
 
-<div class="rn-vol02">
-  <div class="rn-vol02__inner">
-    <div class="rn-vol02__image-side">
-      {%- if display_image != blank -%}
-        <img
-          src="{{ display_image | image_url: width: 800 }}"
-          alt="{{ display_image.alt | escape }}"
-          loading="lazy"
-          width="{{ display_image.width }}"
-          height="{{ display_image.height }}"
-        >
-      {%- endif -%}
+<section class="rn-fp">
+  <div class="rn-fp__inner">
+
+    {%- comment %} Thumbnail strip {%- endcomment %}
+    <div class="rn-fp__thumbs">
+      {%- for image in vol02.images limit: 5 -%}
+        <div class="rn-fp__thumb {% if forloop.first %}active{% endif %}" data-img="{{ image | image_url: width: 800 }}">
+          <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | default: vol02.title | escape }}" loading="lazy">
+        </div>
+      {%- endfor -%}
     </div>
-    <div class="rn-vol02__content-side">
-      <p class="rn-vol02__eyebrow">New Collection</p>
-      <div class="rn-vol02__vol-label">VOL</div>
-      <div class="rn-vol02__vol-sub">02</div>
-      <div class="rn-vol02__divider"></div>
-      {%- if vol02 != blank -%}
-        <h2 class="rn-vol02__title">{{ vol02.title }}</h2>
+
+    {%- comment %} Main image {%- endcomment %}
+    <div class="rn-fp__main-img">
+      <img id="rn-fp-main" src="{{ vol02.featured_image | image_url: width: 800 }}" alt="{{ vol02.title | escape }}" loading="eager">
+    </div>
+
+    {%- comment %} Product info {%- endcomment %}
+    <div class="rn-fp__details">
+      <p class="rn-fp__label">{{ section.settings.section_label | default: 'Featured Product' }}</p>
+      <h2 class="rn-fp__title">{{ vol02.title }}</h2>
+
+      <div class="rn-fp__price-row">
+        {%- if on_sale -%}
+          <span class="rn-fp__price-compare">{{ first_variant.compare_at_price | money }}</span>
+          <span class="rn-fp__price-sale">{{ first_variant.price | money }}</span>
+          {%- assign savings = first_variant.compare_at_price | minus: first_variant.price -%}
+          <span class="rn-fp__price-save">Save {{ savings | money }}</span>
+        {%- else -%}
+          <span class="rn-fp__price-sale">{{ first_variant.price | money }}</span>
+        {%- endif -%}
+      </div>
+      <p class="rn-fp__shipping">Shipping calculated at checkout.</p>
+
+      {%- if vol02.description != blank -%}
+        <div class="rn-fp__desc">{{ vol02.description | strip_html | truncatewords: 60 }}</div>
       {%- endif -%}
-      <p class="rn-vol02__description">{{ section.settings.description | default: 'Discover our latest collection — crafted for elegance and designed for every occasion.' }}</p>
-      <a href="{{ section.settings.button_link | default: '/products/vol-02-embroidery-cotton-suit' }}" class="rn-vol02__btn">
-        {{ section.settings.button_label | default: 'Shop Vol 02' }}
-      </a>
+
+      {%- assign sizes = vol02.variants | map: 'option1' | uniq -%}
+      {%- if sizes.size > 0 -%}
+        <p class="rn-fp__sizes-label">Size</p>
+        <div class="rn-fp__size-row">
+          {%- for size in sizes -%}
+            <button class="rn-fp__size-btn {% if forloop.first %}selected{% endif %}" type="button">{{ size }}</button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="rn-fp__btn-row">
+        <a href="{{ vol02.url }}" class="rn-fp__btn-cart">View Product</a>
+        <a href="{{ vol02.url }}" class="rn-fp__btn-buy">Shop Now</a>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<script>
+(function() {
+  const thumbs = document.querySelectorAll('.rn-fp__thumb');
+  const mainImg = document.getElementById('rn-fp-main');
+  if (!thumbs.length || !mainImg) return;
+
+  thumbs.forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+      const newSrc = this.dataset.img;
+      thumbs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      mainImg.classList.add('fade');
+      setTimeout(function() {
+        mainImg.src = newSrc;
+        mainImg.classList.remove('fade');
+      }, 200);
+    });
+  });
+
+  document.querySelectorAll('.rn-fp__size-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.rn-fp__size-btn').forEach(function(b) { b.classList.remove('selected'); });
+      this.classList.add('selected');
+    });
+  });
+})();
+</script>
+
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Vol 02 Banner",
+  "name": "Vol 02 Featured Product",
   "tag": "section",
-  "class": "section-vol02",
+  "class": "section-vol02-fp",
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "Collection Image (optional - auto-loads from Vol 02 product)" },
-    { "type": "text", "id": "button_label", "label": "Button Label", "default": "Shop Vol 02" },
-    { "type": "url", "id": "button_link", "label": "Button Link" },
-    { "type": "textarea", "id": "description", "label": "Description", "default": "Discover our latest collection — crafted for elegance and designed for every occasion." }
+    { "type": "text", "id": "section_label", "label": "Section Label", "default": "Featured Product" }
   ],
   "presets": [
-    { "name": "Vol 02 Banner" }
+    { "name": "Vol 02 Featured Product" }
   ]
 }
 {% endschema %}
