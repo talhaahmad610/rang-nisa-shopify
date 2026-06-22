@@ -1,0 +1,48 @@
+<style>
+      .rn-vol02 { background-color: #1a1a1a; padding: 0; overflow: hidden; }
+        .rn-vol02__inner { display: flex; align-items: stretch; min-height: 520px; }
+          .rn-vol02__image-side { flex: 1; position: relative; overflow: hidden; }
+            .rn-vol02__image-side img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+              .rn-vol02__content-side { flex: 1; background-color: #1a1a1a; display: flex; flex-direction: column; justify-content: center; padding: 60px 56px; color: #e8e0d4; }
+                .rn-vol02__eyebrow { font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: #c9a96e; margin-bottom: 16px; }
+                  .rn-vol02__vol-label { font-size: 4.5rem; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 8px; }
+                    .rn-vol02__vol-sub { font-size: 1.1rem; color: #c9a96e; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 28px; }
+                      .rn-vol02__divider { width: 48px; height: 2px; background-color: #c9a96e; margin-bottom: 28px; }
+                        .rn-vol02__description { font-size: 1rem; color: #b0a898; line-height: 1.8; margin-bottom: 40px; max-width: 420px; }
+                          .rn-vol02__btn { display: inline-block; padding: 14px 36px; background-color: #c9a96e; color: #1a1a1a; text-decoration: none; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; border: 2px solid #c9a96e; }
+                            .rn-vol02__btn:hover { background-color: transparent; color: #c9a96e; }
+                              @media (max-width: 768px) { .rn-vol02__inner { flex-direction: column; min-height: auto; } .rn-vol02__image-side { height: 380px; } .rn-vol02__content-side { padding: 40px 24px; } .rn-vol02__vol-label { font-size: 3rem; } }
+                              </style>
+
+                              <section class="rn-vol02">
+                                <div class="rn-vol02__inner">
+                                    <div class="rn-vol02__image-side">
+                                          {%- if section.settings.image != blank -%}
+                                                  <img src="{{ section.settings.image | image_url: width: 800 }}" alt="{{ section.settings.image.alt | escape }}" loading="lazy" width="{{ section.settings.image.width }}" height="{{ section.settings.image.height }}">
+                                                        {%- endif -%}
+                                                            </div>
+                                                                <div class="rn-vol02__content-side">
+                                                                      <p class="rn-vol02__eyebrow">New Collection</p>
+                                                                            <h2 class="rn-vol02__vol-label">Vol 02</h2>
+                                                                                  <p class="rn-vol02__vol-sub">Rang Nisa</p>
+                                                                                        <div class="rn-vol02__divider"></div>
+                                                                                              <p class="rn-vol02__description">{{ section.settings.description }}</p>
+                                                                                                    <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="rn-vol02__btn">{{ section.settings.button_label | default: 'Shop Vol 02' }}</a>
+                                                                                                        </div>
+                                                                                                          </div>
+                                                                                                          </section>
+
+                                                                                                          {% schema %}
+                                                                                                          {
+                                                                                                            "name": "Vol 02 Banner",
+                                                                                                              "tag": "section",
+                                                                                                                "class": "section-vol02",
+                                                                                                                  "settings": [
+                                                                                                                      { "type": "image_picker", "id": "image", "label": "Collection Image" },
+                                                                                                                          { "type": "text", "id": "button_label", "label": "Button Label", "default": "Shop Vol 02" },
+                                                                                                                              { "type": "url", "id": "button_link", "label": "Button Link" },
+                                                                                                                                  { "type": "textarea", "id": "description", "label": "Description", "default": "A new chapter in Pakistani fashion. Vol 02 brings together bold prints, breathable fabrics, and timeless silhouettes crafted for the modern woman." }
+                                                                                                                                    ],
+                                                                                                                                      "presets": [{ "name": "Vol 02 Banner" }]
+                                                                                                                                      }
+                                                                                                                                      {% endschema %}
