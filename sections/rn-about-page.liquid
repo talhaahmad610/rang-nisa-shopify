@@ -150,44 +150,57 @@
 
 /* Contact CTA at bottom */
 .rn-about-cta {
-  background: #1a1a1a;
-  color: #fff;
-  padding: 60px 20px;
+  background: #ffffff;
+  color: #111;
+  padding: 80px 20px;
   text-align: center;
+  border-top: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
+}
+.rn-about-cta::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: #111;
+  margin: 0 auto 24px;
 }
 .rn-about-cta__title {
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: 300;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin: 0 0 12px;
+  margin: 0 0 16px;
+  color: #111;
 }
 .rn-about-cta__text {
-  font-size: 0.9rem;
-  color: #bbb;
-  margin: 0 auto 28px;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0 auto 36px;
+  line-height: 1.7;
   text-align: center;
-  max-width: 600px;
+  max-width: 520px;
 }
 .rn-about-cta__btn {
   display: inline-block;
-  padding: 14px 36px;
-  border: 1px solid #fff;
-  color: #fff;
+  padding: 14px 40px;
+  border: 1.5px solid #111;
+  color: #111;
   text-decoration: none;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.25s, color 0.25s;
   margin: 6px;
+  background: transparent;
 }
-.rn-about-cta__btn:hover { background: #fff; color: #1a1a1a; }
+.rn-about-cta__btn:hover { background: #111; color: #fff; }
 .rn-about-cta__btn--filled {
-  background: #fff;
-  color: #1a1a1a;
+  background: #111;
+  color: #fff;
+  border-color: #111;
 }
-.rn-about-cta__btn--filled:hover { background: transparent; color: #fff; }
+.rn-about-cta__btn--filled:hover { background: transparent; color: #111; }
 
 /* Contact form inside about page */
 .rn-about-contact {
