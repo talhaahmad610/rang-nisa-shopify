@@ -47,8 +47,8 @@
         "button_label": "Our story",
         "button_link": "/pages/about-us",
         "color_scheme": "",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     },
     "vol_02_banner": {
