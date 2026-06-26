@@ -53,7 +53,10 @@
     },
     "vol_02_banner": {
       "type": "vol-02-banner",
-      "settings": {}
+      "settings": {
+        "product": "3-piece-embroidery-cotton-suit-2",
+        "section_label": "Featured Product"
+      }
     },
     "faq": {
       "type": "faq",
