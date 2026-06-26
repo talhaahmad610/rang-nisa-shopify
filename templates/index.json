@@ -54,7 +54,8 @@
     "vol_02_banner": {
       "type": "vol-02-banner",
       "settings": {
-        "product": "3-piece-embroidery-cotton-suit-2",
+        "product": "3-piece-embroidery-cotton-suit",
+        "default_color": "",
         "section_label": "Featured Product"
       }
     },
