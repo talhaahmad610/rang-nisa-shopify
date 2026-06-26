@@ -28,6 +28,7 @@
     width: 100%;
     flex-shrink: 0;
   }
+  /* Images always show fully — no cropping on any device */
   .rn-hero__slide img {
     width: 100%;
     height: auto;
@@ -35,17 +36,27 @@
     object-fit: contain;
     object-position: top center;
   }
-  /* Full height mode: on desktop constrain, on mobile let image flow naturally */
-  @media (min-width: 769px) {
+  /* Full height mode: section stretches to 100vh but image still flows naturally */
+  .rn-hero__slide--full {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    background: #111;
+  }
+  .rn-hero__slide--full img {
+    width: 100%;
+    height: auto;
+    max-height: 100vh;
+    object-fit: contain;
+    object-position: top center;
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
     .rn-hero__slide--full {
-      height: 100vh;
-      overflow: hidden;
+      min-height: unset;
     }
     .rn-hero__slide--full img {
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-      object-position: top center;
+      max-height: none;
     }
   }
 
@@ -154,8 +165,11 @@
   @media (max-width: 768px) {
     .rn-hero__content { padding: 24px 20px; }
     .rn-hero__arrow { width: 36px; height: 36px; }
-    .rn-hero__slide { min-height: unset; }
-    .rn-hero__slide img { width: 100%; height: auto; }
+    .rn-hero__slide { min-height: unset !important; }
+    .rn-hero__slide img { width: 100% !important; height: auto !important; max-height: none !important; }
+    .rn-hero__heading { font-size: clamp(1.2rem, 6vw, 2rem); }
+    .rn-hero__subheading { font-size: 0.85rem; }
+    .rn-hero__btn { padding: 10px 24px; font-size: 0.75rem; }
   }
 </style>
 
@@ -294,7 +308,7 @@
       "type": "checkbox",
       "id": "full_height",
       "label": "Full screen height",
-      "default": true
+      "default": false
     },
     {
       "type": "checkbox",
