@@ -11,19 +11,61 @@
   "sections": {
     "hero_video_banner": {
       "type": "hero-video-banner",
+      "blocks": {
+        "slide_6kUy3k": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Banner-Photo-3.jpg",
+            "overlay_opacity": 20,
+            "heading": "New Season Arrivals",
+            "subheading": "",
+            "button_label": "Shop Now",
+            "button_link": "",
+            "button_style": "outline",
+            "text_position": "center",
+            "vertical_position": "middle"
+          }
+        },
+        "slide_n4YAwJ": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Banner-photo-2.jpg",
+            "overlay_opacity": 20,
+            "heading": "New Season Arrivals",
+            "subheading": "",
+            "button_label": "Shop Now",
+            "button_link": "",
+            "button_style": "outline",
+            "text_position": "center",
+            "vertical_position": "middle"
+          }
+        },
+        "slide_dm7rG6": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Banner-Photo-1.jpg",
+            "overlay_opacity": 20,
+            "heading": "New Season Arrivals",
+            "subheading": "",
+            "button_label": "Shop Now",
+            "button_link": "",
+            "button_style": "outline",
+            "text_position": "center",
+            "vertical_position": "middle"
+          }
+        }
+      },
+      "block_order": [
+        "slide_6kUy3k",
+        "slide_n4YAwJ",
+        "slide_dm7rG6"
+      ],
       "settings": {
-        "video": "shopify://files/videos/change_the_Rang_Nisa_font_i_se.mp4",
-        "video_url": "",
-        "overlay_opacity": 40,
-        "text_alignment": "left",
-        "subheading": "New season arrivals",
-        "heading": "",
-        "description": "",
-        "button_label": "Shop new arrivals",
-        "button_link": "/collections/new-arrivals",
-        "button_style": "primary",
-        "color_scheme": "",
-        "full_height": true
+        "full_height": true,
+        "show_arrows": true,
+        "show_dots": true,
+        "autoplay": true,
+        "autoplay_speed": 5
       }
     },
     "featured_product_slider": {
