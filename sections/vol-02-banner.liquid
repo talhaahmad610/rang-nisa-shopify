@@ -55,7 +55,8 @@
 {%- comment %} Active color and size {%- endcomment %}
 {%- assign active_color = active_variant.options[color_option_index] -%}
 {%- assign active_size = active_variant.options[size_option_index] -%}
-{%- assign active_image = active_variant.featured_image | default: vol02.featured_image -%}
+{%- assign start_img_index = section.settings.start_image | minus: 1 -%}
+{%- assign active_image = vol02.images[start_img_index] | default: active_variant.featured_image | default: vol02.featured_image -%}
 
 <style>
 .rnfp2 {
@@ -464,10 +465,14 @@
       "label": "Featured Product"
     },
     {
-      "type": "text",
-      "id": "default_variant_id",
-      "label": "Default Variant ID (optional)",
-      "info": "Paste the variant ID to pre-select a specific color. Leave blank for first variant. Find variant ID in Shopify Admin > Products > variant URL."
+      "type": "range",
+      "id": "start_image",
+      "label": "Starting Image",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 1,
+      "info": "Pick which image shows first (1 = first image, 2 = second image, etc.)"
     },
     {
       "type": "text",
