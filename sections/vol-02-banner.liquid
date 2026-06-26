@@ -1,4 +1,4 @@
-{%- assign vol02 = all_products['vol-02-embroidery-cotton-suit'] -%}
+{%- assign vol02 = section.settings.product -%}
 {%- if vol02 != blank -%}
 {%- assign first_variant = vol02.variants.first -%}
 {%- assign on_sale = false -%}
@@ -142,6 +142,7 @@
   "tag": "section",
   "class": "section-vol02-fp",
   "settings": [
+    { "type": "product", "id": "product", "label": "Featured Product" },
     { "type": "text", "id": "section_label", "label": "Section Label", "default": "Featured Product" }
   ],
   "presets": [
