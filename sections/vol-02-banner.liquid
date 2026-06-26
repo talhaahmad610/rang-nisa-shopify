@@ -1,21 +1,26 @@
 {%- assign vol02 = section.settings.product -%}
 {%- if vol02 != blank -%}
 
-{%- comment %} Determine starting variant based on setting {%- endcomment %}
-{%- assign default_color = section.settings.default_color | downcase | strip -%}
+{%- comment %} Build variant data for JS {%- endcomment %}
+{%- assign color_option_index = nil -%}
+{%- assign size_option_index = nil -%}
+{%- for opt in vol02.options -%}
+  {%- assign opt_lower = opt | downcase -%}
+  {%- if opt_lower == 'color' or opt_lower == 'colour' -%}
+    {%- assign color_option_index = forloop.index0 -%}
+  {%- endif -%}
+  {%- if opt_lower == 'size' -%}
+    {%- assign size_option_index = forloop.index0 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment %} Pick default variant from setting or fall back to first {%- endcomment %}
+{%- assign default_variant_id = section.settings.default_variant_id | plus: 0 -%}
 {%- assign active_variant = vol02.variants.first -%}
-{%- assign active_image = vol02.featured_image -%}
-{%- if default_color != blank -%}
-  {%- for variant in vol02.variants -%}
-    {%- assign variant_option = variant.option1 | downcase | strip -%}
-    {%- unless variant_option contains default_color -%}
-      {%- assign variant_option = variant.option2 | downcase | strip -%}
-    {%- endunless -%}
-    {%- if variant_option contains default_color and active_variant == vol02.variants.first -%}
-      {%- assign active_variant = variant -%}
-      {%- if variant.featured_image != blank -%}
-        {%- assign active_image = variant.featured_image -%}
-      {%- endif -%}
+{%- if default_variant_id > 0 -%}
+  {%- for v in vol02.variants -%}
+    {%- if v.id == default_variant_id -%}
+      {%- assign active_variant = v -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endif -%}
@@ -24,202 +29,251 @@
 {%- if active_variant.compare_at_price > active_variant.price -%}
   {%- assign on_sale = true -%}
 {%- endif -%}
-{%- assign savings = active_variant.compare_at_price | minus: active_variant.price -%}
 
-{%- comment %} Collect images: active image first, then others {%- endcomment %}
-{%- assign all_images = vol02.images -%}
+{%- comment %} Get unique colors {%- endcomment %}
+{%- assign unique_colors = '' -%}
+{%- if color_option_index != nil -%}
+  {%- for v in vol02.variants -%}
+    {%- assign c = v.options[color_option_index] -%}
+    {%- unless unique_colors contains c -%}
+      {%- assign unique_colors = unique_colors | append: c | append: '||' -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment %} Get unique sizes {%- endcomment %}
+{%- assign unique_sizes = '' -%}
+{%- if size_option_index != nil -%}
+  {%- for v in vol02.variants -%}
+    {%- assign s = v.options[size_option_index] -%}
+    {%- unless unique_sizes contains s -%}
+      {%- assign unique_sizes = unique_sizes | append: s | append: '||' -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- comment %} Active color and size {%- endcomment %}
+{%- assign active_color = active_variant.options[color_option_index] -%}
+{%- assign active_size = active_variant.options[size_option_index] -%}
+{%- assign active_image = active_variant.featured_image | default: vol02.featured_image -%}
 
 <style>
-  .rnfp2 {
-    background: #f9f5f0;
-    padding: 60px 0;
-    font-family: inherit;
-  }
-  .rnfp2__inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    gap: 48px;
-    align-items: flex-start;
-  }
+.rnfp2 {
+  background: #f9f5f0;
+  padding: 60px 0;
+  font-family: inherit;
+}
+.rnfp2__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+}
+.rnfp2__gallery {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.rnfp2__thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 80px;
+  flex-shrink: 0;
+}
+.rnfp2__thumb {
+  width: 76px;
+  height: 100px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+  background: #eee;
+}
+.rnfp2__thumb.active, .rnfp2__thumb:hover { border-color: #111; }
+.rnfp2__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.rnfp2__main-img {
+  flex: 1;
+  max-width: 520px;
+  overflow: hidden;
+  background: #f5f0eb;
+}
+.rnfp2__main-img img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+  aspect-ratio: 3/4;
+  transition: opacity 0.25s;
+}
+.rnfp2__main-img img.fade { opacity: 0; }
+.rnfp2__details {
+  flex: 1;
+  padding-top: 8px;
+  min-width: 0;
+}
+.rnfp2__title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 18px;
+  line-height: 1.2;
+}
+.rnfp2__price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.rnfp2__price-compare { font-size: 1.05rem; color: #999; text-decoration: line-through; }
+.rnfp2__price-sale { font-size: 1.05rem; font-weight: 600; color: #111; }
+.rnfp2__price-save { font-size: 0.95rem; color: #c0392b; font-weight: 600; }
+.rnfp2__shipping { font-size: 0.85rem; color: #555; margin: 6px 0 20px; }
 
-  /* ---- LEFT: image gallery ---- */
-  .rnfp2__gallery {
-    display: flex;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  .rnfp2__thumbs {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 80px;
-    flex-shrink: 0;
-  }
-  .rnfp2__thumb {
-    width: 76px;
-    height: 100px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color 0.2s;
-    background: #eee;
-  }
-  .rnfp2__thumb.active,
-  .rnfp2__thumb:hover {
-    border-color: #111;
-  }
-  .rnfp2__thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    display: block;
-  }
-  .rnfp2__main-img {
-    flex: 1;
-    max-width: 520px;
-    overflow: hidden;
-    background: #f5f0eb;
-    position: relative;
-  }
-  .rnfp2__main-img img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    object-position: top center;
-    aspect-ratio: 3/4;
-    transition: opacity 0.3s;
-  }
-  .rnfp2__main-img img.fade { opacity: 0; }
+/* Color swatches */
+.rnfp2__option-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #111;
+  margin-bottom: 10px;
+}
+.rnfp2__option-label span { font-weight: 400; color: #555; text-transform: none; }
+.rnfp2__colors {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.rnfp2__color-btn {
+  padding: 8px 16px;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  letter-spacing: 0.04em;
+  color: #111;
+  white-space: nowrap;
+}
+.rnfp2__color-btn:hover { border-color: #888; }
+.rnfp2__color-btn.active { border-color: #111; background: #111; color: #fff; }
 
-  /* ---- RIGHT: product details ---- */
-  .rnfp2__details {
-    flex: 1;
-    padding-top: 12px;
-  }
-  .rnfp2__title {
-    font-size: 1.7rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #111;
-    margin: 0 0 20px;
-    line-height: 1.2;
-  }
-  .rnfp2__price-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 4px;
-  }
-  .rnfp2__price-compare {
-    font-size: 1.05rem;
-    color: #999;
-    text-decoration: line-through;
-  }
-  .rnfp2__price-sale {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #111;
-  }
-  .rnfp2__price-save {
-    font-size: 1rem;
-    color: #c0392b;
-    font-weight: 600;
-  }
-  .rnfp2__shipping {
-    font-size: 0.85rem;
-    color: #555;
-    margin: 6px 0 20px;
-  }
-  .rnfp2__shipping a {
-    color: #555;
-    text-decoration: underline;
-  }
-  .rnfp2__desc {
-    font-size: 0.95rem;
-    color: #444;
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .rnfp2__desc p { margin: 0 0 14px; }
-  .rnfp2__desc p:last-child { margin-bottom: 0; }
-  .rnfp2__sizes-label {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #111;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .rnfp2__sizes {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .rnfp2__size-btn {
-    padding: 8px 18px;
-    border: 1.5px solid #ccc;
-    background: #fff;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    letter-spacing: 0.05em;
-    color: #111;
-  }
-  .rnfp2__size-btn:hover,
-  .rnfp2__size-btn.active {
-    border-color: #111;
-    background: #111;
-    color: #fff;
-  }
-  .rnfp2__cta {
-    margin-top: 28px;
-  }
-  .rnfp2__cta a {
-    display: inline-block;
-    padding: 14px 36px;
-    background: #111;
-    color: #fff;
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: background 0.2s;
-  }
-  .rnfp2__cta a:hover { background: #333; }
+/* Size buttons */
+.rnfp2__sizes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.rnfp2__size-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  letter-spacing: 0.04em;
+  color: #111;
+}
+.rnfp2__size-btn:hover { border-color: #888; }
+.rnfp2__size-btn.active { border-color: #111; background: #111; color: #fff; }
+.rnfp2__size-btn.unavailable { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
 
-  @media (max-width: 768px) {
-    .rnfp2__inner {
-      flex-direction: column;
-      gap: 24px;
-    }
-    .rnfp2__gallery {
-      width: 100%;
-    }
-    .rnfp2__main-img {
-      max-width: 100%;
-    }
-  }
+/* Description */
+.rnfp2__desc { font-size: 0.9rem; color: #444; line-height: 1.7; margin-bottom: 24px; }
+.rnfp2__desc p { margin: 0 0 12px; }
+.rnfp2__desc p:last-child { margin-bottom: 0; }
+
+.rnfp2__cta a {
+  display: inline-block;
+  padding: 14px 36px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+.rnfp2__cta a:hover { background: #333; }
+
+@media (max-width: 768px) {
+  .rnfp2__inner { flex-direction: column; gap: 24px; }
+  .rnfp2__gallery { width: 100%; }
+  .rnfp2__main-img { max-width: 100%; }
+}
 </style>
 
-<section class="rnfp2" id="vol02-fp-{{ section.id }}">
+{%- comment %} Build JSON variant data for JS {%- endcomment %}
+<script>
+  window.rnfp2_{{ section.id | replace: '-','_' }} = {
+    variants: [
+      {%- for v in vol02.variants -%}
+      {
+        id: {{ v.id }},
+        title: {{ v.title | json }},
+        option1: {{ v.option1 | json }},
+        option2: {{ v.option2 | json }},
+        option3: {{ v.option3 | json }},
+        price: {{ v.price }},
+        compare_at_price: {{ v.compare_at_price | default: 0 }},
+        available: {{ v.available }},
+        featured_image: {{ v.featured_image.src | default: vol02.featured_image.src | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ],
+    color_option_index: {{ color_option_index | default: -1 }},
+    size_option_index: {{ size_option_index | default: -1 }},
+    product_url: {{ vol02.url | json }},
+    all_images: [
+      {%- for img in vol02.images -%}
+        {{ img | image_url: width: 800 | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ],
+    thumb_images: [
+      {%- for img in vol02.images -%}
+        {{ img | image_url: width: 120 | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ],
+    image_alts: [
+      {%- for img in vol02.images -%}
+        {{ img.alt | default: vol02.title | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ]
+  };
+</script>
+
+<section class="rnfp2" id="rnfp2-{{ section.id }}">
   <div class="rnfp2__inner">
 
     {%- comment %} LEFT: Gallery {%- endcomment %}
     <div class="rnfp2__gallery">
-      <div class="rnfp2__thumbs">
-        {%- for image in all_images limit: 6 -%}
-          <div class="rnfp2__thumb{% if image == active_image %} active{% endif %}" data-src="{{ image | image_url: width: 800 }}">
-            <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | default: vol02.title | escape }}" loading="lazy">
+      <div class="rnfp2__thumbs" id="rnfp2-thumbs-{{ section.id }}">
+        {%- for img in vol02.images limit: 8 -%}
+          <div class="rnfp2__thumb{% if img == active_image %} active{% endif %}"
+               data-index="{{ forloop.index0 }}">
+            <img src="{{ img | image_url: width: 120 }}"
+                 alt="{{ img.alt | default: vol02.title | escape }}"
+                 loading="lazy">
           </div>
         {%- endfor -%}
       </div>
       <div class="rnfp2__main-img">
-        <img id="rnfp2-main-{{ section.id }}" src="{{ active_image | image_url: width: 800 }}" alt="{{ vol02.title | escape }}" loading="eager">
+        <img id="rnfp2-main-{{ section.id }}"
+             src="{{ active_image | image_url: width: 800 }}"
+             alt="{{ vol02.title | escape }}"
+             loading="eager">
       </div>
     </div>
 
@@ -231,7 +285,7 @@
         {%- if on_sale -%}
           <span class="rnfp2__price-compare">{{ active_variant.compare_at_price | money }}</span>
           <span class="rnfp2__price-sale">{{ active_variant.price | money }}</span>
-          <span class="rnfp2__price-save">Save {{ savings | money }}</span>
+          <span class="rnfp2__price-save">Save {{ active_variant.compare_at_price | minus: active_variant.price | money }}</span>
         {%- else -%}
           <span class="rnfp2__price-sale">{{ active_variant.price | money }}</span>
         {%- endif -%}
@@ -239,35 +293,40 @@
 
       <p class="rnfp2__shipping">Shipping calculated at checkout.</p>
 
-      {%- if vol02.description != blank -%}
-        <div class="rnfp2__desc">{{ vol02.description }}</div>
-      {%- endif -%}
-
-      {%- comment %} Size options — show unique values of the size option {%- endcomment %}
-      {%- assign size_option_index = nil -%}
-      {%- for option in vol02.options -%}
-        {%- assign opt_lower = option | downcase -%}
-        {%- if opt_lower == 'size' -%}
-          {%- assign size_option_index = forloop.index0 -%}
-        {%- endif -%}
-      {%- endfor -%}
-
-      {%- if size_option_index != nil -%}
-        {%- assign shown_sizes = '' -%}
-        <p class="rnfp2__sizes-label">Available Sizes:</p>
-        <div class="rnfp2__sizes" id="rnfp2-sizes-{{ section.id }}">
-          {%- for variant in vol02.variants -%}
-            {%- assign sz = variant.options[size_option_index] -%}
-            {%- unless shown_sizes contains sz -%}
-              {%- assign shown_sizes = shown_sizes | append: sz | append: ',' -%}
-              <button class="rnfp2__size-btn{% if variant == active_variant %} active{% endif %}" data-variant-id="{{ variant.id }}" data-size="{{ sz }}">{{ sz }}</button>
-            {%- endunless -%}
+      {%- comment %} Color options {%- endcomment %}
+      {%- if color_option_index != nil and unique_colors != '' -%}
+        {%- assign color_list = unique_colors | split: '||' -%}
+        <div class="rnfp2__option-label">Color: <span id="rnfp2-active-color-{{ section.id }}">{{ active_color }}</span></div>
+        <div class="rnfp2__colors" id="rnfp2-colors-{{ section.id }}">
+          {%- for color in color_list -%}
+            {%- if color != blank -%}
+              <button class="rnfp2__color-btn{% if color == active_color %} active{% endif %}"
+                      data-color="{{ color }}">{{ color }}</button>
+            {%- endif -%}
           {%- endfor -%}
         </div>
       {%- endif -%}
 
+      {%- comment %} Size options {%- endcomment %}
+      {%- if size_option_index != nil and unique_sizes != '' -%}
+        {%- assign size_list = unique_sizes | split: '||' -%}
+        <div class="rnfp2__option-label">Size: <span id="rnfp2-active-size-{{ section.id }}">{{ active_size }}</span></div>
+        <div class="rnfp2__sizes" id="rnfp2-sizes-{{ section.id }}">
+          {%- for size in size_list -%}
+            {%- if size != blank -%}
+              <button class="rnfp2__size-btn{% if size == active_size %} active{% endif %}"
+                      data-size="{{ size }}">{{ size }}</button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if vol02.description != blank -%}
+        <div class="rnfp2__desc">{{ vol02.description }}</div>
+      {%- endif -%}
+
       <div class="rnfp2__cta">
-        <a href="{{ vol02.url }}">Shop Now</a>
+        <a href="{{ vol02.url }}" id="rnfp2-cta-{{ section.id }}">Shop Now</a>
       </div>
     </div>
 
@@ -276,31 +335,118 @@
 
 <script>
 (function() {
-  var sectionId = '{{ section.id }}';
-  var mainImg = document.getElementById('rnfp2-main-' + sectionId);
-  var thumbs = document.querySelectorAll('#vol02-fp-' + sectionId + ' .rnfp2__thumb');
-  var sizeBtns = document.querySelectorAll('#rnfp2-sizes-' + sectionId + ' .rnfp2__size-btn');
+  var sid = '{{ section.id | replace: "-","_" }}';
+  var data = window['rnfp2_' + sid];
+  if (!data) return;
 
-  // Thumbnail switcher
-  thumbs.forEach(function(thumb) {
-    thumb.addEventListener('click', function() {
-      thumbs.forEach(function(t) { t.classList.remove('active'); });
-      thumb.classList.add('active');
-      mainImg.classList.add('fade');
-      setTimeout(function() {
-        mainImg.src = thumb.getAttribute('data-src');
-        mainImg.onload = function() { mainImg.classList.remove('fade'); };
-      }, 150);
+  var mainImg   = document.getElementById('rnfp2-main-{{ section.id }}');
+  var priceRow  = document.getElementById('rnfp2-price-{{ section.id }}');
+  var colorLbl  = document.getElementById('rnfp2-active-color-{{ section.id }}');
+  var sizeLbl   = document.getElementById('rnfp2-active-size-{{ section.id }}');
+  var ctaLink   = document.getElementById('rnfp2-cta-{{ section.id }}');
+  var thumbsCont= document.getElementById('rnfp2-thumbs-{{ section.id }}');
+
+  var colorBtns = document.querySelectorAll('#rnfp2-colors-{{ section.id }} .rnfp2__color-btn');
+  var sizeBtns  = document.querySelectorAll('#rnfp2-sizes-{{ section.id }} .rnfp2__size-btn');
+  var thumbBtns = document.querySelectorAll('#rnfp2-thumbs-{{ section.id }} .rnfp2__thumb');
+
+  var selectedColor = colorLbl ? colorLbl.textContent.trim() : null;
+  var selectedSize  = sizeLbl  ? sizeLbl.textContent.trim()  : null;
+
+  function formatMoney(cents) {
+    return 'Rs.' + (cents / 100).toLocaleString('en-PK', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  }
+
+  function findVariant(color, size) {
+    return data.variants.find(function(v) {
+      var colorMatch = data.color_option_index < 0 || !color ||
+        (v['option' + (data.color_option_index + 1)] === color);
+      var sizeMatch  = data.size_option_index < 0  || !size  ||
+        (v['option' + (data.size_option_index + 1)]  === size);
+      return colorMatch && sizeMatch;
+    }) || data.variants[0];
+  }
+
+  function updatePrice(variant) {
+    if (!priceRow) return;
+    var html = '';
+    if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+      var savings = variant.compare_at_price - variant.price;
+      html += '<span class="rnfp2__price-compare">' + formatMoney(variant.compare_at_price) + '</span>';
+      html += '<span class="rnfp2__price-sale">'    + formatMoney(variant.price)             + '</span>';
+      html += '<span class="rnfp2__price-save">Save ' + formatMoney(savings)                 + '</span>';
+    } else {
+      html += '<span class="rnfp2__price-sale">' + formatMoney(variant.price) + '</span>';
+    }
+    priceRow.innerHTML = html;
+  }
+
+  function switchMainImage(src, thumbIndex) {
+    mainImg.classList.add('fade');
+    setTimeout(function() {
+      mainImg.src = src;
+      mainImg.onload = function() { mainImg.classList.remove('fade'); };
+    }, 150);
+    thumbBtns.forEach(function(t, i) {
+      t.classList.toggle('active', i === thumbIndex);
+    });
+  }
+
+  function updateSizeAvailability(color) {
+    sizeBtns.forEach(function(btn) {
+      var size = btn.getAttribute('data-size');
+      var variant = findVariant(color, size);
+      btn.classList.toggle('unavailable', !variant || !variant.available);
+    });
+  }
+
+  // Color button click
+  colorBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      selectedColor = btn.getAttribute('data-color');
+
+      colorBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      if (colorLbl) colorLbl.textContent = selectedColor;
+
+      // Find matching variant to get its image
+      var variant = findVariant(selectedColor, selectedSize);
+      if (variant && variant.featured_image) {
+        // Find which thumb index matches this image
+        var imgSrc = variant.featured_image;
+        var matchIdx = data.all_images.findIndex(function(s) {
+          return s && imgSrc && (s.includes(imgSrc.split('?')[0].split('/').pop().split('_')[0]) ||
+                                  imgSrc.includes(s.split('?')[0].split('/').pop()));
+        });
+        switchMainImage(imgSrc, matchIdx >= 0 ? matchIdx : 0);
+      }
+
+      updatePrice(variant || data.variants[0]);
+      updateSizeAvailability(selectedColor);
     });
   });
 
-  // Size button selector
+  // Size button click
   sizeBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
+      if (btn.classList.contains('unavailable')) return;
+      selectedSize = btn.getAttribute('data-size');
       sizeBtns.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
+      if (sizeLbl) sizeLbl.textContent = selectedSize;
+
+      var variant = findVariant(selectedColor, selectedSize);
+      if (variant) updatePrice(variant);
     });
   });
+
+  // Thumbnail click
+  thumbBtns.forEach(function(thumb, idx) {
+    thumb.addEventListener('click', function() {
+      switchMainImage(data.all_images[idx], idx);
+    });
+  });
+
 })();
 </script>
 
@@ -312,14 +458,23 @@
   "tag": "section",
   "class": "section-vol02-fp",
   "settings": [
-    { "type": "product", "id": "product", "label": "Featured Product" },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Featured Product"
+    },
     {
       "type": "text",
-      "id": "default_color",
-      "label": "Default Color / Variant to show first",
-      "info": "Type the color name (e.g. Turquoise, Beige, Pink). Leave blank to show the first variant."
+      "id": "default_variant_id",
+      "label": "Default Variant ID (optional)",
+      "info": "Paste the variant ID to pre-select a specific color. Leave blank for first variant. Find variant ID in Shopify Admin > Products > variant URL."
     },
-    { "type": "text", "id": "section_label", "label": "Section Label", "default": "Featured Product" }
+    {
+      "type": "text",
+      "id": "section_label",
+      "label": "Section Label",
+      "default": "Featured Product"
+    }
   ],
   "presets": [
     { "name": "Vol 02 Featured Product" }
