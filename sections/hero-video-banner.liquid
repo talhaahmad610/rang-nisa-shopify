@@ -22,41 +22,38 @@
     transition: transform 0.6s cubic-bezier(.4,0,.2,1);
     will-change: transform;
   }
+  /* Images always show fully — no cropping on any device */
+  /* Desktop: cover fills full width, anchored top so heads never crop */
+  .rn-hero__slide img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: top center;
+  }
   .rn-hero__slide {
     position: relative;
     min-width: 100%;
     width: 100%;
     flex-shrink: 0;
+    min-height: 75vh;
   }
-  /* Images always show fully — no cropping on any device */
-  .rn-hero__slide img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    object-position: top center;
-  }
-  /* Full height mode: section stretches to 100vh but image still flows naturally */
+  /* Full height mode */
   .rn-hero__slide--full {
     min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    background: #111;
   }
-  .rn-hero__slide--full img {
-    width: 100%;
-    height: auto;
-    max-height: 100vh;
-    object-fit: contain;
-    object-position: top center;
-    flex-shrink: 0;
-  }
+  /* Mobile: let image flow at natural height — no cropping */
   @media (max-width: 768px) {
+    .rn-hero__slide {
+      min-height: unset;
+    }
     .rn-hero__slide--full {
       min-height: unset;
     }
-    .rn-hero__slide--full img {
-      max-height: none;
+    .rn-hero__slide img {
+      height: auto;
+      object-fit: contain;
+      object-position: top center;
     }
   }
 
