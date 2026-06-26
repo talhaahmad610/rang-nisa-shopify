@@ -44,8 +44,8 @@
           "type": "slide",
           "settings": {
             "image": "shopify://shop_images/Banner-Photo-1.jpg",
-            "overlay_opacity": 20,
-            "heading": "New Season Arrivals",
+            "overlay_opacity": 0,
+            "heading": "",
             "subheading": "",
             "button_label": "Shop Now",
             "button_link": "",
