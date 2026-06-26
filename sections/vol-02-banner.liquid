@@ -1,134 +1,304 @@
 {%- assign vol02 = section.settings.product -%}
 {%- if vol02 != blank -%}
-{%- assign first_variant = vol02.variants.first -%}
+
+{%- comment %} Determine starting variant based on setting {%- endcomment %}
+{%- assign default_color = section.settings.default_color | downcase | strip -%}
+{%- assign active_variant = vol02.variants.first -%}
+{%- assign active_image = vol02.featured_image -%}
+{%- if default_color != blank -%}
+  {%- for variant in vol02.variants -%}
+    {%- assign variant_option = variant.option1 | downcase | strip -%}
+    {%- unless variant_option contains default_color -%}
+      {%- assign variant_option = variant.option2 | downcase | strip -%}
+    {%- endunless -%}
+    {%- if variant_option contains default_color and active_variant == vol02.variants.first -%}
+      {%- assign active_variant = variant -%}
+      {%- if variant.featured_image != blank -%}
+        {%- assign active_image = variant.featured_image -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
 {%- assign on_sale = false -%}
-{%- if first_variant.compare_at_price > first_variant.price -%}{%- assign on_sale = true -%}{%- endif -%}
+{%- if active_variant.compare_at_price > active_variant.price -%}
+  {%- assign on_sale = true -%}
+{%- endif -%}
+{%- assign savings = active_variant.compare_at_price | minus: active_variant.price -%}
+
+{%- comment %} Collect images: active image first, then others {%- endcomment %}
+{%- assign all_images = vol02.images -%}
 
 <style>
-  .rn-fp { background: #ffffff; padding: 60px 0; }
-  .rn-fp__inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 0; align-items: flex-start; }
+  .rnfp2 {
+    background: #f9f5f0;
+    padding: 60px 0;
+    font-family: inherit;
+  }
+  .rnfp2__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+  }
 
-  /* Thumbnail column */
-  .rn-fp__thumbs { display: flex; flex-direction: column; gap: 10px; width: 90px; flex-shrink: 0; margin-right: 16px; }
-  .rn-fp__thumb { width: 86px; height: 110px; cursor: pointer; border: 2px solid transparent; overflow: hidden; transition: border-color 0.2s; }
-  .rn-fp__thumb.active,
-  .rn-fp__thumb:hover { border-color: #111; }
-  .rn-fp__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  /* ---- LEFT: image gallery ---- */
+  .rnfp2__gallery {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .rnfp2__thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .rnfp2__thumb {
+    width: 76px;
+    height: 100px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    background: #eee;
+  }
+  .rnfp2__thumb.active,
+  .rnfp2__thumb:hover {
+    border-color: #111;
+  }
+  .rnfp2__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .rnfp2__main-img {
+    flex: 1;
+    max-width: 520px;
+    overflow: hidden;
+    background: #f5f0eb;
+    position: relative;
+  }
+  .rnfp2__main-img img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: top center;
+    aspect-ratio: 3/4;
+    transition: opacity 0.3s;
+  }
+  .rnfp2__main-img img.fade { opacity: 0; }
 
-  /* Main image */
-  .rn-fp__main-img { flex: 1; max-width: 520px; position: relative; overflow: hidden; background: #f5f0eb; }
-  .rn-fp__main-img img { width: 100%; display: block; object-fit: cover; object-position: top center; aspect-ratio: 3/4; transition: opacity 0.3s ease; }
-  .rn-fp__main-img img.fade { opacity: 0; }
+  /* ---- RIGHT: product details ---- */
+  .rnfp2__details {
+    flex: 1;
+    padding-top: 12px;
+  }
+  .rnfp2__title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #111;
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+  .rnfp2__price-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .rnfp2__price-compare {
+    font-size: 1.05rem;
+    color: #999;
+    text-decoration: line-through;
+  }
+  .rnfp2__price-sale {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #111;
+  }
+  .rnfp2__price-save {
+    font-size: 1rem;
+    color: #c0392b;
+    font-weight: 600;
+  }
+  .rnfp2__shipping {
+    font-size: 0.85rem;
+    color: #555;
+    margin: 6px 0 20px;
+  }
+  .rnfp2__shipping a {
+    color: #555;
+    text-decoration: underline;
+  }
+  .rnfp2__desc {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .rnfp2__desc p { margin: 0 0 14px; }
+  .rnfp2__desc p:last-child { margin-bottom: 0; }
+  .rnfp2__sizes-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .rnfp2__sizes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .rnfp2__size-btn {
+    padding: 8px 18px;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    letter-spacing: 0.05em;
+    color: #111;
+  }
+  .rnfp2__size-btn:hover,
+  .rnfp2__size-btn.active {
+    border-color: #111;
+    background: #111;
+    color: #fff;
+  }
+  .rnfp2__cta {
+    margin-top: 28px;
+  }
+  .rnfp2__cta a {
+    display: inline-block;
+    padding: 14px 36px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .rnfp2__cta a:hover { background: #333; }
 
-  /* Product details */
-  .rn-fp__details { flex: 1; padding-left: 48px; padding-top: 8px; }
-  .rn-fp__label { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
-  .rn-fp__title { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; margin: 0 0 18px; line-height: 1.2; }
-  .rn-fp__price-row { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
-  .rn-fp__price-compare { font-size: 1.05rem; color: #999; text-decoration: line-through; }
-  .rn-fp__price-sale { font-size: 1.2rem; font-weight: 600; color: #111; }
-  .rn-fp__price-save { font-size: 0.9rem; color: #c0392b; font-weight: 500; }
-  .rn-fp__shipping { font-size: 0.82rem; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-  .rn-fp__desc { font-size: 0.9rem; color: #444; line-height: 1.75; margin-bottom: 24px; }
-  .rn-fp__sizes-label { font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; color: #111; font-weight: 600; margin-bottom: 12px; }
-  .rn-fp__size-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
-  .rn-fp__size-btn { width: 52px; height: 52px; border: 1.5px solid #ccc; background: #fff; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
-  .rn-fp__size-btn:hover,
-  .rn-fp__size-btn.selected { border-color: #111; background: #111; color: #fff; }
-  .rn-fp__btn-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-  .rn-fp__btn-cart { display: block; width: 100%; padding: 16px 24px; background: transparent; border: 1.5px solid #111; color: #111; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; text-decoration: none; cursor: pointer; transition: all 0.25s; }
-  .rn-fp__btn-cart:hover { background: #111; color: #fff; }
-  .rn-fp__btn-buy { display: block; width: 100%; padding: 16px 24px; background: #111; border: 1.5px solid #111; color: #fff; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; text-decoration: none; transition: all 0.25s; }
-  .rn-fp__btn-buy:hover { background: #333; }
-
-  @media (max-width: 900px) {
-    .rn-fp__inner { flex-wrap: wrap; }
-    .rn-fp__thumbs { flex-direction: row; width: 100%; order: 2; margin-right: 0; margin-top: 12px; overflow-x: auto; }
-    .rn-fp__thumb { width: 70px; height: 88px; flex-shrink: 0; }
-    .rn-fp__main-img { max-width: 100%; width: 100%; order: 1; }
-    .rn-fp__details { padding-left: 0; padding-top: 24px; width: 100%; order: 3; }
+  @media (max-width: 768px) {
+    .rnfp2__inner {
+      flex-direction: column;
+      gap: 24px;
+    }
+    .rnfp2__gallery {
+      width: 100%;
+    }
+    .rnfp2__main-img {
+      max-width: 100%;
+    }
   }
 </style>
 
-<section class="rn-fp">
-  <div class="rn-fp__inner">
+<section class="rnfp2" id="vol02-fp-{{ section.id }}">
+  <div class="rnfp2__inner">
 
-    {%- comment %} Thumbnail strip {%- endcomment %}
-    <div class="rn-fp__thumbs">
-      {%- for image in vol02.images limit: 5 -%}
-        <div class="rn-fp__thumb {% if forloop.first %}active{% endif %}" data-img="{{ image | image_url: width: 800 }}">
-          <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | default: vol02.title | escape }}" loading="lazy">
-        </div>
-      {%- endfor -%}
+    {%- comment %} LEFT: Gallery {%- endcomment %}
+    <div class="rnfp2__gallery">
+      <div class="rnfp2__thumbs">
+        {%- for image in all_images limit: 6 -%}
+          <div class="rnfp2__thumb{% if image == active_image %} active{% endif %}" data-src="{{ image | image_url: width: 800 }}">
+            <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | default: vol02.title | escape }}" loading="lazy">
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="rnfp2__main-img">
+        <img id="rnfp2-main-{{ section.id }}" src="{{ active_image | image_url: width: 800 }}" alt="{{ vol02.title | escape }}" loading="eager">
+      </div>
     </div>
 
-    {%- comment %} Main image {%- endcomment %}
-    <div class="rn-fp__main-img">
-      <img id="rn-fp-main" src="{{ vol02.featured_image | image_url: width: 800 }}" alt="{{ vol02.title | escape }}" loading="eager">
-    </div>
+    {%- comment %} RIGHT: Product Details {%- endcomment %}
+    <div class="rnfp2__details">
+      <h2 class="rnfp2__title">{{ vol02.title }}</h2>
 
-    {%- comment %} Product info {%- endcomment %}
-    <div class="rn-fp__details">
-      <p class="rn-fp__label">{{ section.settings.section_label | default: 'Featured Product' }}</p>
-      <h2 class="rn-fp__title">{{ vol02.title }}</h2>
-
-      <div class="rn-fp__price-row">
+      <div class="rnfp2__price-row" id="rnfp2-price-{{ section.id }}">
         {%- if on_sale -%}
-          <span class="rn-fp__price-compare">{{ first_variant.compare_at_price | money }}</span>
-          <span class="rn-fp__price-sale">{{ first_variant.price | money }}</span>
-          {%- assign savings = first_variant.compare_at_price | minus: first_variant.price -%}
-          <span class="rn-fp__price-save">Save {{ savings | money }}</span>
+          <span class="rnfp2__price-compare">{{ active_variant.compare_at_price | money }}</span>
+          <span class="rnfp2__price-sale">{{ active_variant.price | money }}</span>
+          <span class="rnfp2__price-save">Save {{ savings | money }}</span>
         {%- else -%}
-          <span class="rn-fp__price-sale">{{ first_variant.price | money }}</span>
+          <span class="rnfp2__price-sale">{{ active_variant.price | money }}</span>
         {%- endif -%}
       </div>
-      <p class="rn-fp__shipping">Shipping calculated at checkout.</p>
+
+      <p class="rnfp2__shipping">Shipping calculated at checkout.</p>
 
       {%- if vol02.description != blank -%}
-        <div class="rn-fp__desc">{{ vol02.description | strip_html | truncatewords: 60 }}</div>
+        <div class="rnfp2__desc">{{ vol02.description }}</div>
       {%- endif -%}
 
-      {%- assign sizes = vol02.variants | map: 'option1' | uniq -%}
-      {%- if sizes.size > 0 -%}
-        <p class="rn-fp__sizes-label">Size</p>
-        <div class="rn-fp__size-row">
-          {%- for size in sizes -%}
-            <button class="rn-fp__size-btn {% if forloop.first %}selected{% endif %}" type="button">{{ size }}</button>
+      {%- comment %} Size options — show unique values of the size option {%- endcomment %}
+      {%- assign size_option_index = nil -%}
+      {%- for option in vol02.options -%}
+        {%- assign opt_lower = option | downcase -%}
+        {%- if opt_lower == 'size' -%}
+          {%- assign size_option_index = forloop.index0 -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if size_option_index != nil -%}
+        {%- assign shown_sizes = '' -%}
+        <p class="rnfp2__sizes-label">Available Sizes:</p>
+        <div class="rnfp2__sizes" id="rnfp2-sizes-{{ section.id }}">
+          {%- for variant in vol02.variants -%}
+            {%- assign sz = variant.options[size_option_index] -%}
+            {%- unless shown_sizes contains sz -%}
+              {%- assign shown_sizes = shown_sizes | append: sz | append: ',' -%}
+              <button class="rnfp2__size-btn{% if variant == active_variant %} active{% endif %}" data-variant-id="{{ variant.id }}" data-size="{{ sz }}">{{ sz }}</button>
+            {%- endunless -%}
           {%- endfor -%}
         </div>
       {%- endif -%}
 
-      <div class="rn-fp__btn-row">
-        <a href="{{ vol02.url }}" class="rn-fp__btn-cart">View Product</a>
-        <a href="{{ vol02.url }}" class="rn-fp__btn-buy">Shop Now</a>
+      <div class="rnfp2__cta">
+        <a href="{{ vol02.url }}">Shop Now</a>
       </div>
     </div>
+
   </div>
 </section>
 
 <script>
 (function() {
-  const thumbs = document.querySelectorAll('.rn-fp__thumb');
-  const mainImg = document.getElementById('rn-fp-main');
-  if (!thumbs.length || !mainImg) return;
+  var sectionId = '{{ section.id }}';
+  var mainImg = document.getElementById('rnfp2-main-' + sectionId);
+  var thumbs = document.querySelectorAll('#vol02-fp-' + sectionId + ' .rnfp2__thumb');
+  var sizeBtns = document.querySelectorAll('#rnfp2-sizes-' + sectionId + ' .rnfp2__size-btn');
 
+  // Thumbnail switcher
   thumbs.forEach(function(thumb) {
     thumb.addEventListener('click', function() {
-      const newSrc = this.dataset.img;
       thumbs.forEach(function(t) { t.classList.remove('active'); });
-      this.classList.add('active');
+      thumb.classList.add('active');
       mainImg.classList.add('fade');
       setTimeout(function() {
-        mainImg.src = newSrc;
-        mainImg.classList.remove('fade');
-      }, 200);
+        mainImg.src = thumb.getAttribute('data-src');
+        mainImg.onload = function() { mainImg.classList.remove('fade'); };
+      }, 150);
     });
   });
 
-  document.querySelectorAll('.rn-fp__size-btn').forEach(function(btn) {
+  // Size button selector
+  sizeBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
-      document.querySelectorAll('.rn-fp__size-btn').forEach(function(b) { b.classList.remove('selected'); });
-      this.classList.add('selected');
+      sizeBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
     });
   });
 })();
@@ -143,6 +313,12 @@
   "class": "section-vol02-fp",
   "settings": [
     { "type": "product", "id": "product", "label": "Featured Product" },
+    {
+      "type": "text",
+      "id": "default_color",
+      "label": "Default Color / Variant to show first",
+      "info": "Type the color name (e.g. Turquoise, Beige, Pink). Leave blank to show the first variant."
+    },
     { "type": "text", "id": "section_label", "label": "Section Label", "default": "Featured Product" }
   ],
   "presets": [
