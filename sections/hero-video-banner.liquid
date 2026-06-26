@@ -30,12 +30,24 @@
   }
   .rn-hero__slide img {
     width: 100%;
+    height: auto;
     display: block;
-    object-fit: cover;
-    object-position: center center;
+    object-fit: contain;
+    object-position: top center;
   }
-  .rn-hero__slide--full { height: 100vh; }
-  .rn-hero__slide--full img { height: 100%; }
+  /* Full height mode: on desktop constrain, on mobile let image flow naturally */
+  @media (min-width: 769px) {
+    .rn-hero__slide--full {
+      height: 100vh;
+      overflow: hidden;
+    }
+    .rn-hero__slide--full img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+      object-position: top center;
+    }
+  }
 
   /* Overlay */
   .rn-hero__overlay {
@@ -142,6 +154,8 @@
   @media (max-width: 768px) {
     .rn-hero__content { padding: 24px 20px; }
     .rn-hero__arrow { width: 36px; height: 36px; }
+    .rn-hero__slide { min-height: unset; }
+    .rn-hero__slide img { width: 100%; height: auto; }
   }
 </style>
 
