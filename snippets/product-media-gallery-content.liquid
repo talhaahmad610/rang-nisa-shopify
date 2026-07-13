@@ -772,6 +772,7 @@
   .dialog-zoomed-gallery__dialog {
     background-color: var(--color-background);
     view-transition-name: zoom-dialog-ui;
+    z-index: var(--layer-temporary);
   }
 
   .dialog-zoomed-gallery {
@@ -902,9 +903,8 @@
   }
 
   ::view-transition-group(zoom-dialog-ui) {
-    z-index: calc(var(--layer-overlay) + 1);
+  z-index: var(--layer-temporary);
   }
-
   ::view-transition-old(gallery-item-open),
   ::view-transition-new(gallery-item-open) {
     animation-timing-function: step-start;
