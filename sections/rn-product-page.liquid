@@ -32,11 +32,13 @@
 /* Main layout */
 .rn-product__body {
   display: grid;
-  grid-template-columns: 1fr 480px;
-  min-height: 80vh;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.85fr);
+  max-width: 1360px;
+  margin: 0 auto;
+  min-height: 0;
 }
 @media (max-width: 1024px) {
-  .rn-product__body { grid-template-columns: 1fr; }
+  .rn-product__body { grid-template-columns: 1fr; max-width: none; }
 }
 
 /* ---- GALLERY ---- */
@@ -55,7 +57,8 @@
 }
 @media (max-width: 768px) {
   .rn-gallery__main { grid-template-columns: 1fr; height: auto; max-height: none; }
-  .rn-gallery__thumbs { display: none; }
+  .rn-gallery__thumbs { display: none !important; }
+  .rn-gallery__featured { display: none !important; }
   .rn-product__breadcrumb { padding: 14px 16px; }
 }
 
@@ -66,6 +69,7 @@
   gap: 6px;
   padding: 16px 10px 16px 16px;
   overflow-y: auto;
+  min-height: 0;
   scrollbar-width: none;
   background: #f5f5f5;
 }
@@ -121,22 +125,48 @@
   display: none;
 }
 @media (max-width: 768px) {
+  .rn-product__gallery { margin: 0; padding: 0; }
   .rn-gallery__mobile-imgs {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    gap: 4px;
+    gap: 0;
+    margin: 0;
+    padding: 0;
   }
   .rn-gallery__mobile-imgs::-webkit-scrollbar { display: none; }
   .rn-gallery__mobile-imgs img {
     flex-shrink: 0;
+    flex-basis: 100%;
     width: 100%;
     scroll-snap-align: start;
-    height: 480px;
+    scroll-snap-stop: always;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
     opacity: 1 !important;
+    display: block;
   }
+  .rn-gallery__dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 0;
+  }
+  .rn-gallery__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d8d8d8;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .rn-gallery__dot.active {
+    background: #1a1a1a;
+    transform: scale(1.2);
+  }
+}
+@media (min-width: 769px) {
+  .rn-gallery__dots { display: none; }
 }
 
 /* ---- DETAILS PANEL ---- */
@@ -610,7 +640,7 @@
       </div>
 
       <!-- Mobile swipe images -->
-      <div class="rn-gallery__mobile-imgs">
+      <div class="rn-gallery__mobile-imgs" id="rn-mobile-imgs-{{ section.id }}">
         {%- for media in product.media -%}
           <img
             src="{{ media | image_url: width: 800 }}"
@@ -619,6 +649,13 @@
           >
         {%- endfor -%}
       </div>
+      {%- if product.media.size > 1 -%}
+        <div class="rn-gallery__dots" id="rn-mobile-dots-{{ section.id }}">
+          {%- for media in product.media -%}
+            <span class="rn-gallery__dot{% if forloop.first %} active{% endif %}"></span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
     </div>
 
     <!-- DETAILS PANEL -->
@@ -1042,7 +1079,7 @@
 
   // Wishlist button
   function rnWishlist(btn) {
-    btn.innerHTML = '<span>\u2665</span> Wishlisted';
+    btn.innerHTML = '<span>♥</span> Wishlisted';
     btn.style.color = '#c0392b';
     btn.style.borderColor = '#c0392b';
   }
@@ -1073,9 +1110,28 @@
       form.addEventListener('submit', function() {
         var btn = form.querySelector('[name="add"]');
         if (btn && !btn.disabled) {
-          setTimeout(function() { rnShowToast('Added to cart! \u2714'); }, 800);
+          setTimeout(function() { rnShowToast('Added to cart! ✔'); }, 800);
         }
       });
+    });
+
+    // Mobile gallery: keep dot indicators in sync with swipe position
+    document.querySelectorAll('.rn-gallery__mobile-imgs').forEach(function(track) {
+      var id = track.id.replace('rn-mobile-imgs-', '');
+      var dotsWrap = document.getElementById('rn-mobile-dots-' + id);
+      if (!dotsWrap) return;
+      var dots = dotsWrap.querySelectorAll('.rn-gallery__dot');
+      var ticking = false;
+      track.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+          var slideWidth = track.clientWidth || 1;
+          var index = Math.round(track.scrollLeft / slideWidth);
+          dots.forEach(function(d, i) { d.classList.toggle('active', i === index); });
+          ticking = false;
+        });
+      }, { passive: true });
     });
   });
 </script>
